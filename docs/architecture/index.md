@@ -1,0 +1,12 @@
+# Architecture (Sharded)
+
+- [Overview & Module Boundaries](overview-and-modules.md)
+- [WebSocket Command Pipeline](command-pipeline.md)
+- [Element Targeting Strategy](element-targeting.md)
+- [AI Assist Button Rendering](ai-overlay.md)
+- [Integration Points](integration-points.md)
+- [Shared Types & API Contract](shared-types-and-api.md)
+- [Project Structure & Workflow](project-structure.md)
+- [Platform, Deployment & Resilience](platform-deployment.md)
+- [Security, Performance & Monitoring](security-performance-monitoring.md)
+- [Next Steps](architecture-next-steps.md)
