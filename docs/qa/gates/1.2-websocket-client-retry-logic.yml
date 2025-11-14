@@ -1,0 +1,19 @@
+schema: 1
+story: "1.2"
+story_title: "WebSocket Client & Retry Logic"
+gate: CONCERNS
+status_reason: "Core acceptance criteria appear met based on the Dev Agent Record and tests executed, but demo connection UX and telemetry still rely on manual verification and lack automated coverage."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-11-14T18:16:55Z"
+
+top_issues:
+  - id: "REL-001"
+    severity: medium
+    finding: "Demo UI connection states and error messaging are only manually validated; there are no automated integration tests exercising ConnectionBanner and connection lifecycle behavior."
+    suggested_action: "Add integration tests in apps/demo to cover connection lifecycle (connect, transient disconnect, repeated failures, offline) and verify the banner and events panel render expected states without crashes."
+  - id: "TEST-001"
+    severity: medium
+    finding: "Backoff, offline, and reconnection edge cases are not validated in a browser-like environment beyond unit tests of the backoff logic."
+    suggested_action: "Introduce browser/E2E tests (e.g., Playwright or similar) to simulate flaky network conditions and confirm reconnection/backoff behavior does not degrade UX or stability."
+
+waiver: { active: false }
