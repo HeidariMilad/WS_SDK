@@ -8,5 +8,10 @@
     "lint": "eslint . --ext .ts,.tsx || true",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md}\" || true",
     "test": "echo 'No tests yet'"
+  },
+  "dependencies": {
+    "@frontend-ui-command-sdk/sdk": "0.1.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   }
 }
