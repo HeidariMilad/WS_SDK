@@ -1,0 +1,12 @@
+{
+  "name": "@frontend-ui-command-sdk/config",
+  "version": "0.1.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "echo 'No build for config yet'",
+    "lint": "echo 'No lint for config yet'",
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\" || true",
+    "test": "echo 'No tests yet'"
+  }
+}

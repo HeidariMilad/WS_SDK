@@ -1,0 +1,12 @@
+{
+  "name": "@frontend-ui-command-sdk/mocks",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Mocks server not yet implemented'",
+    "build": "echo 'Mocks build not yet implemented'",
+    "lint": "eslint . --ext .ts,.tsx || true",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md}\" || true",
+    "test": "echo 'No tests yet'"
+  }
+}
