@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerCommandHandlers = exports.registerRefreshCallback = exports.handleRefreshElement = exports.unregisterNavigationRouter = exports.registerNavigationRouter = exports.handleNavigate = exports.clearAllOverlays = exports.stopTargetingObserver = exports.startTargetingObserver = exports.unregisterOverlay = exports.registerOverlay = exports.getTargetingGuidance = exports.buildWarningMessage = exports.resolveTargetBySelector = exports.resolveTargetByDataElementId = exports.resolveTarget = exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
+exports.getOverlayConfigByElement = exports.getOverlayConfig = exports.detachAllAiButtons = exports.updateAiButton = exports.detachAiButtonByElement = exports.detachAiButton = exports.attachAiButton = exports.registerCommandHandlers = exports.registerRefreshCallback = exports.handleRefreshElement = exports.unregisterNavigationRouter = exports.registerNavigationRouter = exports.handleNavigate = exports.clearAllOverlays = exports.stopTargetingObserver = exports.startTargetingObserver = exports.unregisterOverlay = exports.registerOverlay = exports.getTargetingGuidance = exports.buildWarningMessage = exports.resolveTargetBySelector = exports.resolveTargetByDataElementId = exports.resolveTarget = exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
 exports.placeholderSdk = placeholderSdk;
 function placeholderSdk() {
     return "frontend-ui-command-sdk placeholder";
@@ -51,4 +51,13 @@ Object.defineProperty(exports, "handleRefreshElement", { enumerable: true, get: 
 Object.defineProperty(exports, "registerRefreshCallback", { enumerable: true, get: function () { return refresh_element_1.registerRefreshCallback; } });
 var registry_1 = require("./commands/registry");
 Object.defineProperty(exports, "registerCommandHandlers", { enumerable: true, get: function () { return registry_1.registerCommandHandlers; } });
+// AI Overlay module
+var ai_overlay_1 = require("./ai-overlay");
+Object.defineProperty(exports, "attachAiButton", { enumerable: true, get: function () { return ai_overlay_1.attachAiButton; } });
+Object.defineProperty(exports, "detachAiButton", { enumerable: true, get: function () { return ai_overlay_1.detachAiButton; } });
+Object.defineProperty(exports, "detachAiButtonByElement", { enumerable: true, get: function () { return ai_overlay_1.detachAiButtonByElement; } });
+Object.defineProperty(exports, "updateAiButton", { enumerable: true, get: function () { return ai_overlay_1.updateAiButton; } });
+Object.defineProperty(exports, "detachAllAiButtons", { enumerable: true, get: function () { return ai_overlay_1.detachAllAiButtons; } });
+Object.defineProperty(exports, "getOverlayConfig", { enumerable: true, get: function () { return ai_overlay_1.getOverlayConfig; } });
+Object.defineProperty(exports, "getOverlayConfigByElement", { enumerable: true, get: function () { return ai_overlay_1.getOverlayConfigByElement; } });
 //# sourceMappingURL=index.js.map
