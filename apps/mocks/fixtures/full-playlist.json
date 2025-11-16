@@ -1,0 +1,174 @@
+{
+  "name": "Full Command Playlist",
+  "description": "Comprehensive coverage including success, warning, and error scenarios",
+  "commands": [
+    {
+      "command": "click",
+      "elementId": "submit-button",
+      "payload": {
+        "clickType": "single"
+      },
+      "requestId": "req-f001"
+    },
+    {
+      "command": "click",
+      "elementId": "nonexistent-button",
+      "requestId": "req-f002",
+      "_note": "Should generate warning: element not found"
+    },
+    {
+      "command": "fill",
+      "elementId": "username-input",
+      "payload": {
+        "value": "testuser@example.com"
+      },
+      "requestId": "req-f003"
+    },
+    {
+      "command": "fill",
+      "elementId": "readonly-input",
+      "payload": {
+        "value": "should fail"
+      },
+      "requestId": "req-f004",
+      "_note": "Warning: trying to fill readonly field"
+    },
+    {
+      "command": "clear",
+      "elementId": "search-input",
+      "requestId": "req-f005"
+    },
+    {
+      "command": "clear",
+      "requestId": "req-f006",
+      "_note": "Warning: no elementId provided"
+    },
+    {
+      "command": "focus",
+      "elementId": "password-input",
+      "requestId": "req-f007"
+    },
+    {
+      "command": "focus",
+      "elementId": "hidden-element",
+      "requestId": "req-f008",
+      "_note": "Warning: element not visible"
+    },
+    {
+      "command": "hover",
+      "elementId": "tooltip-trigger",
+      "requestId": "req-f009"
+    },
+    {
+      "command": "highlight",
+      "elementId": "important-section",
+      "payload": {
+        "duration": 3000,
+        "color": "#ffeb3b"
+      },
+      "requestId": "req-f010"
+    },
+    {
+      "command": "scroll",
+      "elementId": "content-area",
+      "payload": {
+        "behavior": "smooth",
+        "block": "center"
+      },
+      "requestId": "req-f011"
+    },
+    {
+      "command": "scroll",
+      "payload": {
+        "behavior": "auto",
+        "top": 0
+      },
+      "requestId": "req-f012",
+      "_note": "Scroll to top without elementId"
+    },
+    {
+      "command": "select",
+      "elementId": "country-dropdown",
+      "payload": {
+        "value": "US"
+      },
+      "requestId": "req-f013"
+    },
+    {
+      "command": "select",
+      "elementId": "country-dropdown",
+      "payload": {
+        "value": "INVALID_CODE"
+      },
+      "requestId": "req-f014",
+      "_note": "Warning: invalid option value"
+    },
+    {
+      "command": "navigate",
+      "payload": {
+        "url": "/dashboard"
+      },
+      "requestId": "req-f015"
+    },
+    {
+      "command": "navigate",
+      "payload": {
+        "url": "https://external-site.com"
+      },
+      "requestId": "req-f016",
+      "_note": "Warning: external navigation not allowed"
+    },
+    {
+      "command": "refresh_element",
+      "elementId": "dynamic-content",
+      "requestId": "req-f017"
+    },
+    {
+      "command": "open",
+      "elementId": "modal-dialog",
+      "requestId": "req-f018"
+    },
+    {
+      "command": "close",
+      "elementId": "modal-dialog",
+      "requestId": "req-f019"
+    },
+    {
+      "command": "open",
+      "elementId": "sidebar-panel",
+      "requestId": "req-f020"
+    },
+    {
+      "command": "close",
+      "elementId": "sidebar-panel",
+      "requestId": "req-f021"
+    },
+    {
+      "command": "unknown_command",
+      "elementId": "some-element",
+      "requestId": "req-f022",
+      "_note": "Error: unrecognized command"
+    },
+    {
+      "command": "highlight",
+      "elementId": "demo-banner",
+      "payload": {
+        "duration": 1500
+      },
+      "requestId": "req-f023"
+    },
+    {
+      "command": "fill",
+      "elementId": "email-input",
+      "payload": {
+        "value": "demo@example.com"
+      },
+      "requestId": "req-f024"
+    },
+    {
+      "command": "click",
+      "elementId": "demo-submit",
+      "requestId": "req-f025"
+    }
+  ]
+}

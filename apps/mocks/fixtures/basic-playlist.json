@@ -1,0 +1,84 @@
+{
+  "name": "Basic Command Playlist",
+  "description": "Covers all command types with typical success scenarios",
+  "commands": [
+    {
+      "command": "click",
+      "elementId": "submit-button",
+      "payload": {
+        "clickType": "single"
+      },
+      "requestId": "req-001"
+    },
+    {
+      "command": "fill",
+      "elementId": "username-input",
+      "payload": {
+        "value": "testuser@example.com"
+      },
+      "requestId": "req-002"
+    },
+    {
+      "command": "clear",
+      "elementId": "search-input",
+      "requestId": "req-003"
+    },
+    {
+      "command": "focus",
+      "elementId": "password-input",
+      "requestId": "req-004"
+    },
+    {
+      "command": "hover",
+      "elementId": "tooltip-trigger",
+      "requestId": "req-005"
+    },
+    {
+      "command": "highlight",
+      "elementId": "important-section",
+      "payload": {
+        "duration": 2000
+      },
+      "requestId": "req-006"
+    },
+    {
+      "command": "scroll",
+      "elementId": "content-area",
+      "payload": {
+        "behavior": "smooth",
+        "block": "center"
+      },
+      "requestId": "req-007"
+    },
+    {
+      "command": "select",
+      "elementId": "country-dropdown",
+      "payload": {
+        "value": "US"
+      },
+      "requestId": "req-008"
+    },
+    {
+      "command": "navigate",
+      "payload": {
+        "url": "/dashboard"
+      },
+      "requestId": "req-009"
+    },
+    {
+      "command": "refresh_element",
+      "elementId": "dynamic-content",
+      "requestId": "req-010"
+    },
+    {
+      "command": "open",
+      "elementId": "modal-dialog",
+      "requestId": "req-011"
+    },
+    {
+      "command": "close",
+      "elementId": "modal-dialog",
+      "requestId": "req-012"
+    }
+  ]
+}

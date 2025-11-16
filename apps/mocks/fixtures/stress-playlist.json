@@ -1,0 +1,113 @@
+{
+  "name": "Stress Test Playlist",
+  "description": "High-volume command sequence for performance testing",
+  "intervalMs": 100,
+  "commands": [
+    {
+      "command": "highlight",
+      "elementId": "item-1",
+      "payload": { "duration": 500 },
+      "requestId": "stress-001"
+    },
+    {
+      "command": "highlight",
+      "elementId": "item-2",
+      "payload": { "duration": 500 },
+      "requestId": "stress-002"
+    },
+    {
+      "command": "highlight",
+      "elementId": "item-3",
+      "payload": { "duration": 500 },
+      "requestId": "stress-003"
+    },
+    {
+      "command": "hover",
+      "elementId": "button-1",
+      "requestId": "stress-004"
+    },
+    {
+      "command": "hover",
+      "elementId": "button-2",
+      "requestId": "stress-005"
+    },
+    {
+      "command": "fill",
+      "elementId": "input-1",
+      "payload": { "value": "test1" },
+      "requestId": "stress-006"
+    },
+    {
+      "command": "fill",
+      "elementId": "input-2",
+      "payload": { "value": "test2" },
+      "requestId": "stress-007"
+    },
+    {
+      "command": "fill",
+      "elementId": "input-3",
+      "payload": { "value": "test3" },
+      "requestId": "stress-008"
+    },
+    {
+      "command": "click",
+      "elementId": "rapid-click-target",
+      "requestId": "stress-009"
+    },
+    {
+      "command": "click",
+      "elementId": "rapid-click-target",
+      "requestId": "stress-010"
+    },
+    {
+      "command": "scroll",
+      "payload": { "top": 100 },
+      "requestId": "stress-011"
+    },
+    {
+      "command": "scroll",
+      "payload": { "top": 200 },
+      "requestId": "stress-012"
+    },
+    {
+      "command": "scroll",
+      "payload": { "top": 300 },
+      "requestId": "stress-013"
+    },
+    {
+      "command": "focus",
+      "elementId": "focus-cycle-1",
+      "requestId": "stress-014"
+    },
+    {
+      "command": "focus",
+      "elementId": "focus-cycle-2",
+      "requestId": "stress-015"
+    },
+    {
+      "command": "focus",
+      "elementId": "focus-cycle-3",
+      "requestId": "stress-016"
+    },
+    {
+      "command": "clear",
+      "elementId": "input-1",
+      "requestId": "stress-017"
+    },
+    {
+      "command": "clear",
+      "elementId": "input-2",
+      "requestId": "stress-018"
+    },
+    {
+      "command": "clear",
+      "elementId": "input-3",
+      "requestId": "stress-019"
+    },
+    {
+      "command": "refresh_element",
+      "elementId": "dynamic-1",
+      "requestId": "stress-020"
+    }
+  ]
+}
