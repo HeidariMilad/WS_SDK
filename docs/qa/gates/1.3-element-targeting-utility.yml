@@ -1,0 +1,19 @@
+schema: 1
+story: "1.3"
+story_title: "Element Targeting Utility"
+gate: PASS
+status_reason: "Core targeting module and unit tests are solid; remaining pipeline/demo integration and lifecycle/UI automation work is explicitly scoped to future stories (2.1–2.3, 3.1, 4.1) and does not block this story's gate."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-11-16T13:44:22Z"
+
+top_issues:
+  - id: "TARGET-001"
+    severity: medium
+    finding: "Targeting utilities are not yet integrated into the command pipeline, so unresolved targets do not emit CommandResult entries with status 'warning' or appear in the command timeline as described in the story."
+    suggested_action: "Wire resolveTarget into CommandDispatcher/handlers and ensure unresolved targets produce CommandResult warnings with meaningful details."
+  - id: "TARGET-002"
+    severity: medium
+    finding: "MutationObserver-based overlay lifecycle management is not covered by integration or UI tests; current validation relies only on unit-level logic."
+    suggested_action: "Add demo-level integration/E2E tests that exercise element removal/reattachment and verify overlays are cleaned up and restored without runtime errors."
+
+waiver: { active: false }
