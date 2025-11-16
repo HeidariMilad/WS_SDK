@@ -5,6 +5,7 @@ import {
   CommandDispatcher,
   createWebSocketCommandClient,
   registerCommandHandlers,
+  setChatbotBridge,
 } from "@frontend-ui-command-sdk/sdk";
 import { getDemoWebSocketUrl } from "../config/connection";
 
@@ -28,6 +29,29 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const connectionRef = useRef<ReturnType<typeof createWebSocketCommandClient> | null>(null);
 
   useEffect(() => {
+    // Set up chatbot bridge from window global (poll until available)
+    const checkBridge = () => {
+      const bridge = (window as unknown as { __chatbotBridge?: { open(): void; close(): void; receivePrompt(data: unknown): void } }).__chatbotBridge;
+      if (bridge) {
+        setChatbotBridge(bridge);
+        return true;
+      }
+      return false;
+    };
+
+    // Try immediately
+    if (!checkBridge()) {
+      // Poll for bridge initialization
+      const pollInterval = setInterval(() => {
+        if (checkBridge()) {
+          clearInterval(pollInterval);
+        }
+      }, 100);
+
+      // Clean up polling after 5 seconds
+      setTimeout(() => clearInterval(pollInterval), 5000);
+    }
+
     const dispatcher = new CommandDispatcher();
     dispatcherRef.current = dispatcher;
 

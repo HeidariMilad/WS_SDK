@@ -103,6 +103,17 @@ export interface ChatbotEvent {
     };
 }
 /**
+ * Data structure sent to chatbot when receiving a prompt.
+ */
+export interface ChatbotPromptData {
+    prompt: string;
+    elementId: string;
+    requestId: string;
+    extraInfo?: Record<string, unknown>;
+    metadata?: AIElementMetadata;
+    timestamp: number;
+}
+/**
  * Interface for chatbot bridge implementations.
  *
  * The SDK uses this contract to communicate with host chatbot implementations.
@@ -117,22 +128,10 @@ export interface IChatbotBridge {
      */
     close(): void;
     /**
-     * Check if the chatbot is currently open.
-     */
-    isOpen(): boolean;
-    /**
-     * Send a prompt to the chatbot.
+     * Receive a prompt from the AI system.
      *
-     * @param prompt - The AI-generated prompt text.
-     * @param metadata - Optional metadata about the source element.
+     * @param data - Complete prompt data including elementId, requestId, and metadata.
      */
-    receivePrompt(prompt: string, metadata?: AIElementMetadata): void;
-    /**
-     * Subscribe to chatbot events.
-     *
-     * @param callback - Function called when events occur.
-     * @returns Unsubscribe function.
-     */
-    onEvent(callback: (event: ChatbotEvent) => void): () => void;
+    receivePrompt(data: ChatbotPromptData): void;
 }
 //# sourceMappingURL=index.d.ts.map

@@ -114,19 +114,26 @@ async function handleAIButtonClick(metadata) {
         emitChatbotEvent(chatbotEvent);
         // 4. Interact with chatbot bridge if available
         if (chatbotBridge) {
-            // Open the chatbot UI
-            if (!chatbotBridge.isOpen()) {
-                chatbotBridge.open();
-                // Emit open event
-                emitChatbotEvent({
-                    type: "CHATBOT_OPEN",
-                    payload: {
-                        timestamp: Date.now(),
-                    },
-                });
-            }
+            // Prepare chatbot prompt data
+            const chatbotData = {
+                prompt: promptResponse.prompt,
+                elementId,
+                requestId: promptResponse.requestId,
+                extraInfo: promptResponse.metadata,
+                metadata: aiMetadata,
+                timestamp: promptResponse.timestamp,
+            };
             // Send the prompt to the chatbot
-            chatbotBridge.receivePrompt(promptResponse.prompt, aiMetadata);
+            chatbotBridge.receivePrompt(chatbotData);
+            // Auto-expand the chatbot
+            chatbotBridge.open();
+            // Emit open event
+            emitChatbotEvent({
+                type: "CHATBOT_OPEN",
+                payload: {
+                    timestamp: Date.now(),
+                },
+            });
             loggingBus_1.globalLoggingBus.log({
                 severity: "info",
                 category: "ai-prompt",
@@ -167,7 +174,15 @@ async function handleAIButtonClick(metadata) {
         if (chatbotBridge) {
             // For error scenarios, we can still send a message to the chatbot
             const errorPrompt = `Failed to generate AI prompt: ${errorMessage}. Please try again or contact support if the issue persists.`;
-            chatbotBridge.receivePrompt(errorPrompt, toAIElementMetadata(metadata));
+            const errorData = {
+                prompt: errorPrompt,
+                elementId,
+                requestId: `error-${Date.now()}`,
+                extraInfo: { error: errorMessage },
+                metadata: toAIElementMetadata(metadata),
+                timestamp: Date.now(),
+            };
+            chatbotBridge.receivePrompt(errorData);
         }
         // Re-throw for caller to handle (e.g., show toast)
         throw error;
