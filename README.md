@@ -63,8 +63,43 @@ npm run test
 npm run test:e2e
 ```
 
+## Current Status
+
+**Branch**: `3.2.story` | **Tests**: 99/99 ✅ | **Build**: Passing ✅
+
+- ✅ **Epic 1**: Connection & Targeting (100%)
+- ✅ **Epic 2**: UI Command Set (100%)
+- 🔄 **Epic 3**: AI Assist & Chatbot (33% - Story 3.1 complete)
+- ⏳ **Epic 4**: Demo & Documentation (0%)
+
+**Latest**: Story 3.1 - AI Button Factory with WeakMap registry, portal rendering, and WCAG 2.1 AA accessibility ✅
+
 ## Documentation
 
-- [PRD](docs/prd.md)
-- [Architecture](docs/architecture.md)
-- [Front-End Spec](docs/front-end-spec.md)
+### Development Guides
+- 📋 **[DEV_STATUS.md](DEV_STATUS.md)** - Comprehensive project state and development guide
+- ⚡ **[QUICK_REF.md](QUICK_REF.md)** - Quick reference card for fast orientation
+
+### Project Docs
+- [PRD](docs/prd.md) - Product requirements
+- [Architecture](docs/architecture.md) - Technical architecture
+- [Front-End Spec](docs/front-end-spec.md) - UI/UX specifications
+- [Stories](docs/stories/) - Story files with implementation details
+
+## Key Features
+
+### Implemented ✅
+- **WebSocket Client** - Connection management with retry logic and heartbeat
+- **Element Targeting** - `data-elementid` targeting with CSS selector fallback
+- **11 UI Commands** - click, fill, clear, focus, hover, select, highlight, scroll, open-close, navigate, refresh
+- **AI Button Factory** - Configurable overlay buttons with lifecycle management
+- **Accessibility** - WCAG 2.1 AA compliant with ARIA labels and keyboard support
+
+### In Progress 🔄
+- **AI Prompt Workflow** - Metadata collection and prompt generation (Story 3.2)
+- **Chatbot Bridge** - IChatbotBridge interface implementation (Story 3.3)
+
+### Planned ⏳
+- **Demo Application** - Interactive Next.js demo (Story 4.1)
+- **Mock Services** - WebSocket and REST mocks (Story 4.2)
+- **SDK Documentation** - API reference and integration guide (Story 4.3)
