@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import type { CommandResult } from "@frontend-ui-command-sdk/shared";
-import type { ConnectionState, NavigationRouter } from "@frontend-ui-command-sdk/sdk";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import type { CommandResult } from '@frontend-ui-command-sdk/shared';
+import type { ConnectionState, NavigationRouter } from '@frontend-ui-command-sdk/sdk';
 import {
   CommandDispatcher,
   createWebSocketCommandClient,
   registerCommandHandlers,
   setChatbotBridge,
-} from "@frontend-ui-command-sdk/sdk";
-import { getDemoWebSocketUrl } from "../config/connection";
+} from '@frontend-ui-command-sdk/sdk';
+import { getDemoWebSocketUrl } from '../config/connection';
 
 interface ConnectionContextValue {
   connectionState: ConnectionState;
@@ -21,7 +21,7 @@ const ConnectionContext = createContext<ConnectionContextValue | undefined>(unde
 export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatcherRef = useRef<CommandDispatcher>();
   const [connectionState, setConnectionState] = useState<ConnectionState>({
-    status: "offline",
+    status: 'offline',
     retryCount: 0,
   });
   const [lastError, setLastError] = useState<CommandResult | undefined>();
@@ -31,7 +31,11 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => {
     // Set up chatbot bridge from window global (poll until available)
     const checkBridge = () => {
-      const bridge = (window as unknown as { __chatbotBridge?: { open(): void; close(): void; receivePrompt(data: unknown): void } }).__chatbotBridge;
+      const bridge = (
+        window as unknown as {
+          __chatbotBridge?: { open(): void; close(): void; receivePrompt(data: unknown): void };
+        }
+      ).__chatbotBridge;
       if (bridge) {
         setChatbotBridge(bridge);
         return true;
@@ -59,16 +63,16 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     const router: NavigationRouter = {
       push: (path: string) => {
         try {
-          window.history.pushState({}, "", path);
-          window.dispatchEvent(new PopStateEvent("popstate"));
+          window.history.pushState({}, '', path);
+          window.dispatchEvent(new PopStateEvent('popstate'));
         } catch {
           // ignore navigation errors in demo
         }
       },
       replace: (path: string) => {
         try {
-          window.history.replaceState({}, "", path);
-          window.dispatchEvent(new PopStateEvent("popstate"));
+          window.history.replaceState({}, '', path);
+          window.dispatchEvent(new PopStateEvent('popstate'));
         } catch {
           // ignore navigation errors in demo
         }
@@ -88,7 +92,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     connection.connect();
 
     const unsubscribeStatus = connection.subscribeStatus(setConnectionState);
-    const unsubscribeErrors = connection.subscribeErrors((error) => {
+    const unsubscribeErrors = connection.subscribeErrors(error => {
       setLastError(error);
     });
 
@@ -96,7 +100,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       unsubscribeStatus();
       unsubscribeErrors();
       unregisterHandlers();
-      connection.disconnect({ reason: "ConnectionProvider unmounted" });
+      connection.disconnect({ reason: 'ConnectionProvider unmounted' });
     };
   }, []);
 
@@ -117,7 +121,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 export function useConnection(): ConnectionContextValue {
   const ctx = useContext(ConnectionContext);
   if (!ctx) {
-    throw new Error("useConnection must be used within a ConnectionProvider");
+    throw new Error('useConnection must be used within a ConnectionProvider');
   }
   return ctx;
 }
