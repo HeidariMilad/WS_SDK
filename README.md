@@ -143,14 +143,14 @@ Refer to `docs/front-end-spec.md` for full UX flows, wireframes, and accessibili
 
 ## Current Status
 
-**Branch**: `main` | **Tests**: 99/99 ✅ | **Build**: Passing ✅
+**Branch**: `main` | **Tests**: 118/118 ✅ | **Build**: Passing ✅
 
 - ✅ **Epic 1**: Connection & Targeting (100%)
 - ✅ **Epic 2**: UI Command Set (100%)
-- 🔄 **Epic 3**: AI Assist & Chatbot (33% - Story 3.1 complete)
-- 🔄 **Epic 4**: Demo & Documentation (67% - Stories 4.2 & 4.3 complete; demo pending)
+- ✅ **Epic 3**: AI Assist & Chatbot (100%)
+- ✅ **Epic 4**: Demo & Documentation (100%)
 
-**Latest**: Story 4.3 - README & Developer Guide with SDK API documentation ✅
+**Latest**: All stories complete - Project ready for production ✅
 
 ## Documentation
 
@@ -179,20 +179,16 @@ These references explain the design decisions behind the exported SDK APIs and h
 ## Key Features
 
 ### Implemented ✅
-- **WebSocket Client** - Connection management with retry logic and heartbeat
-- **Element Targeting** - `data-elementid` targeting with CSS selector fallback
+- **WebSocket Client** - Connection management with exponential backoff retry logic and heartbeat
+- **Element Targeting** - `data-elementid` targeting with CSS selector fallback and retry logic
 - **11 UI Commands** - click, fill, clear, focus, hover, select, highlight, scroll, open-close, navigate, refresh
-- **AI Button Factory** - Configurable overlay buttons with lifecycle management
-- **Accessibility** - WCAG 2.1 AA compliant with ARIA labels and keyboard support
-
-### In Progress 🔄
+- **AI Button Factory** - Configurable overlay buttons with lifecycle management and WeakMap registry
 - **AI Prompt Workflow** - Metadata collection and prompt generation (Story 3.2)
 - **Chatbot Bridge** - IChatbotBridge interface implementation (Story 3.3)
-- **Demo Application** - Interactive Next.js demo (Story 4.1)
-
-### Recently Completed ✅
+- **Demo Application** - Interactive Next.js demo with showcase page and visual logger (Story 4.1)
 - **Mock Services** - WebSocket and REST mocks with command playlists (Story 4.2)
-- **SDK Documentation** - API reference and integration guide (Story 4.3)
+- **SDK Documentation** - Comprehensive API reference and integration guide (Story 4.3)
+- **Accessibility** - WCAG 2.1 AA compliant with ARIA labels and keyboard support
 
 ### Planned / Stretch Goals ⏳
 - **Extended SDK Documentation** - Deeper guides ("recipes"), troubleshooting, and production-ready integration patterns beyond this assignment scope
