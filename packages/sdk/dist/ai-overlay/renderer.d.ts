@@ -4,7 +4,7 @@
  * Manages the .sdk-overlay-root portal and renders overlay buttons
  * with proper positioning and lifecycle management.
  */
-import type { OverlayConfig } from "./types";
+import type { OverlayConfig, ElementMetadata } from "./types";
 /**
  * Get or create the portal root element.
  *
@@ -15,10 +15,10 @@ export declare function getOrCreatePortalRoot(): HTMLDivElement;
  * Render an overlay button for a given configuration.
  *
  * @param config - The overlay configuration.
- * @param onButtonClick - Optional callback when button is clicked.
+ * @param onButtonClick - Optional callback when button is clicked (called after prompt workflow).
  * @returns The rendered button element, or null if target element is not available.
  */
-export declare function renderOverlay(config: OverlayConfig, onButtonClick?: (metadata: any) => void | Promise<void>): HTMLButtonElement | null;
+export declare function renderOverlay(config: OverlayConfig, onButtonClick?: (metadata: ElementMetadata) => void | Promise<void>): HTMLButtonElement | null;
 /**
  * Remove a rendered overlay button.
  *

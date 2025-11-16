@@ -13,7 +13,7 @@ import {
 import type {
   AttachAiButtonOptions,
   AttachResult,
-  ElementMetadata,
+  ElementMetadata, // eslint-disable-line @typescript-eslint/no-unused-vars
   OverlayConfig,
 } from "./types";
 import {
@@ -27,7 +27,6 @@ import {
 import {
   renderOverlay,
   removeOverlay,
-  updateOverlayPosition,
   cleanupPortal,
   removeAllOverlays as removeAllRenderedOverlays,
 } from "./renderer";
@@ -41,6 +40,21 @@ export type {
   OverlaySize,
   OverlayState,
 } from "./types";
+
+// Re-export prompt workflow functions
+export {
+  setChatbotBridge,
+  getChatbotBridge,
+  configurePromptWorkflow,
+  handleAIButtonClick,
+  formatPromptError,
+} from "./promptWorkflow";
+
+export type {
+  PromptClientConfig,
+  PromptApiError,
+  PromptApiResponse,
+} from "./promptClient";
 
 /**
  * Attach an AI assistant button to a target element.
@@ -127,7 +141,7 @@ export async function attachAiButton(
         // Re-render overlay
         renderOverlay(config);
       },
-      detach: (el: HTMLElement) => {
+      detach: () => {
         // Remove rendered overlay
         removeOverlay(overlayId);
         // Keep config in registry for potential reattachment

@@ -6,6 +6,7 @@
  * configurable styling, placement, and lifecycle management.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatPromptError = exports.handleAIButtonClick = exports.configurePromptWorkflow = exports.getChatbotBridge = exports.setChatbotBridge = void 0;
 exports.attachAiButton = attachAiButton;
 exports.detachAiButton = detachAiButton;
 exports.detachAiButtonByElement = detachAiButtonByElement;
@@ -17,6 +18,13 @@ const targeting_1 = require("../targeting");
 const lifecycle_1 = require("../targeting/lifecycle");
 const registry_1 = require("./registry");
 const renderer_1 = require("./renderer");
+// Re-export prompt workflow functions
+var promptWorkflow_1 = require("./promptWorkflow");
+Object.defineProperty(exports, "setChatbotBridge", { enumerable: true, get: function () { return promptWorkflow_1.setChatbotBridge; } });
+Object.defineProperty(exports, "getChatbotBridge", { enumerable: true, get: function () { return promptWorkflow_1.getChatbotBridge; } });
+Object.defineProperty(exports, "configurePromptWorkflow", { enumerable: true, get: function () { return promptWorkflow_1.configurePromptWorkflow; } });
+Object.defineProperty(exports, "handleAIButtonClick", { enumerable: true, get: function () { return promptWorkflow_1.handleAIButtonClick; } });
+Object.defineProperty(exports, "formatPromptError", { enumerable: true, get: function () { return promptWorkflow_1.formatPromptError; } });
 /**
  * Attach an AI assistant button to a target element.
  *
@@ -89,7 +97,7 @@ async function attachAiButton(elementId, options = {}) {
                 // Re-render overlay
                 (0, renderer_1.renderOverlay)(config);
             },
-            detach: (el) => {
+            detach: () => {
                 // Remove rendered overlay
                 (0, renderer_1.removeOverlay)(overlayId);
                 // Keep config in registry for potential reattachment

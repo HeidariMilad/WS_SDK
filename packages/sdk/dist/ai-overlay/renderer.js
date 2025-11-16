@@ -16,6 +16,8 @@ exports.getRenderedButton = getRenderedButton;
 exports.cleanupPortal = cleanupPortal;
 const AIOverlayButton_1 = require("./AIOverlayButton");
 const utils_1 = require("./utils");
+const promptWorkflow_1 = require("./promptWorkflow");
+const loggingBus_1 = require("../logging/loggingBus");
 /**
  * Portal root element for all overlay buttons.
  * Created once and reused for all overlays.
@@ -62,7 +64,7 @@ function getOrCreatePortalRoot() {
  * Render an overlay button for a given configuration.
  *
  * @param config - The overlay configuration.
- * @param onButtonClick - Optional callback when button is clicked.
+ * @param onButtonClick - Optional callback when button is clicked (called after prompt workflow).
  * @returns The rendered button element, or null if target element is not available.
  */
 function renderOverlay(config, onButtonClick) {
@@ -75,8 +77,34 @@ function renderOverlay(config, onButtonClick) {
     removeOverlay(overlayId);
     // Collect metadata from the target element
     const metadata = (0, utils_1.collectElementMetadata)(targetElement);
-    // Create the button
-    const button = (0, AIOverlayButton_1.createAIOverlayButton)(options, metadata, onButtonClick);
+    // Create integrated click handler that runs prompt workflow first
+    const integratedClickHandler = async (metadata) => {
+        try {
+            // Execute the prompt workflow (API call + chatbot integration)
+            await (0, promptWorkflow_1.handleAIButtonClick)(metadata);
+            // Call the user's custom onClick handler if provided
+            if (onButtonClick) {
+                await onButtonClick(metadata);
+            }
+        }
+        catch (error) {
+            // Log user-friendly error message
+            const userMessage = (0, promptWorkflow_1.formatPromptError)(error);
+            loggingBus_1.globalLoggingBus.log({
+                severity: "error",
+                category: "ui",
+                message: userMessage,
+                metadata: {
+                    elementId: metadata.elementId,
+                    error: error instanceof Error ? error.message : String(error),
+                },
+            });
+            // Re-throw for button component to handle loading state
+            throw error;
+        }
+    };
+    // Create the button with integrated handler
+    const button = (0, AIOverlayButton_1.createAIOverlayButton)(options, metadata, integratedClickHandler);
     // Enable pointer events on the button
     button.style.pointerEvents = "auto";
     // Position the button
@@ -131,8 +159,9 @@ function removeOverlay(overlayId) {
     if (!button)
         return false;
     // Call cleanup handlers
-    if (button.__cleanupHandlers) {
-        button.__cleanupHandlers();
+    const buttonWithHandlers = button;
+    if (buttonWithHandlers.__cleanupHandlers) {
+        buttonWithHandlers.__cleanupHandlers();
     }
     // Remove from DOM
     if (button.parentElement) {

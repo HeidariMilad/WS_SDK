@@ -1,14 +1,4 @@
 
-
 > @frontend-ui-command-sdk/mocks@0.1.0 lint
 > eslint . --ext .ts,.tsx || true
 
-[1G[0K
-Oops! Something went wrong! :(
-
-ESLint: 8.57.1
-
-No files matching the pattern "." were found.
-Please check for typing mistakes in the pattern.
-
-[1G[0K⠙[1G[0K

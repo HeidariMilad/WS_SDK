@@ -58,4 +58,81 @@ export interface CommandResult {
      */
     warnings?: TargetResolutionWarning[];
 }
+/**
+ * Metadata about an element for AI prompt generation.
+ */
+export interface AIElementMetadata {
+    elementId?: string;
+    tagName: string;
+    textContent?: string;
+    value?: string;
+    dataAttributes: Record<string, string>;
+    computedLabel?: string;
+    boundingBox: {
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+    };
+}
+/**
+ * Payload sent to AI prompt generation endpoint.
+ */
+export interface AIPromptRequest {
+    metadata: AIElementMetadata;
+    timestamp: number;
+    context?: Record<string, unknown>;
+}
+/**
+ * Response from AI prompt generation endpoint.
+ */
+export interface AIPromptResponse {
+    prompt: string;
+    timestamp: number;
+    metadata?: Record<string, unknown>;
+}
+/**
+ * Event emitted when an AI prompt is generated.
+ */
+export interface ChatbotEvent {
+    type: "AI_PROMPT" | "CHATBOT_OPEN" | "CHATBOT_CLOSE";
+    payload?: {
+        prompt?: string;
+        metadata?: AIElementMetadata;
+        timestamp: number;
+    };
+}
+/**
+ * Interface for chatbot bridge implementations.
+ *
+ * The SDK uses this contract to communicate with host chatbot implementations.
+ */
+export interface IChatbotBridge {
+    /**
+     * Open the chatbot UI.
+     */
+    open(): void;
+    /**
+     * Close the chatbot UI.
+     */
+    close(): void;
+    /**
+     * Check if the chatbot is currently open.
+     */
+    isOpen(): boolean;
+    /**
+     * Send a prompt to the chatbot.
+     *
+     * @param prompt - The AI-generated prompt text.
+     * @param metadata - Optional metadata about the source element.
+     */
+    receivePrompt(prompt: string, metadata?: AIElementMetadata): void;
+    /**
+     * Subscribe to chatbot events.
+     *
+     * @param callback - Function called when events occur.
+     * @returns Unsubscribe function.
+     */
+    onEvent(callback: (event: ChatbotEvent) => void): () => void;
+}
 //# sourceMappingURL=index.d.ts.map

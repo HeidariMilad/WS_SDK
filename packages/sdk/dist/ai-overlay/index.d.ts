@@ -4,8 +4,11 @@
  * Public API for attaching AI assistant buttons to UI elements with
  * configurable styling, placement, and lifecycle management.
  */
-import type { AttachAiButtonOptions, AttachResult, OverlayConfig } from "./types";
+import type { AttachAiButtonOptions, AttachResult, // eslint-disable-line @typescript-eslint/no-unused-vars
+OverlayConfig } from "./types";
 export type { AttachAiButtonOptions, AttachResult, ElementMetadata, OverlayPlacement, OverlaySize, OverlayState, } from "./types";
+export { setChatbotBridge, getChatbotBridge, configurePromptWorkflow, handleAIButtonClick, formatPromptError, } from "./promptWorkflow";
+export type { PromptClientConfig, PromptApiError, PromptApiResponse, } from "./promptClient";
 /**
  * Attach an AI assistant button to a target element.
  *
