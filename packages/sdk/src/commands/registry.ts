@@ -6,12 +6,17 @@ import { handleHighlight } from "./highlight";
 import { handleHover } from "./hover";
 import { handleFocus } from "./focus";
 import { handleScroll } from "./scroll";
+import { handleClick } from "./click";
+import { handleFill } from "./fill";
+import { handleClear } from "./clear";
+import { handleSelect } from "./select";
+import { handleOpen, handleClose } from "./open-close";
 import { globalLoggingBus } from "../logging/loggingBus";
 
 /**
  * Register all command handlers with the dispatcher.
  *
- * Registers: navigate, refresh_element, highlight, hover, focus, scroll
+ * Registers: navigate, refresh_element, highlight, hover, focus, scroll, click, fill, clear, select, open, close
  *
  * @param dispatcher - Command dispatcher instance
  * @param router - Optional navigation router (required for navigate command)
@@ -182,6 +187,174 @@ export function registerCommandHandlers(
       });
   });
   unregisterFns.push(unregisterScroll);
+
+  // Register click command
+  const unregisterClick = dispatcher.register("click", (payload) => {
+    handleClick(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "click handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterClick);
+
+  // Register fill command
+  const unregisterFill = dispatcher.register("fill", (payload) => {
+    handleFill(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "fill handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterFill);
+
+  // Register clear command
+  const unregisterClear = dispatcher.register("clear", (payload) => {
+    handleClear(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "clear handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterClear);
+
+  // Register select command
+  const unregisterSelect = dispatcher.register("select", (payload) => {
+    handleSelect(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "select handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterSelect);
+
+  // Register open command
+  const unregisterOpen = dispatcher.register("open", (payload) => {
+    handleOpen(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "open handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterOpen);
+
+  // Register close command
+  const unregisterClose = dispatcher.register("close", (payload) => {
+    handleClose(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "close handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterClose);
 
   // Return cleanup function
   return () => {
