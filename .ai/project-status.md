@@ -2,147 +2,186 @@
 
 **Last Updated:** 2025-11-16  
 **Project:** Frontend UI Command SDK  
-**Current Phase:** Epic 2 - Command Execution Engine (Story 2.2 Complete)
+**Current Phase:** Epic 3 - AI Assist & Chatbot (Story 3.1 Complete)
 
 ## Executive Summary
 
-The Frontend UI Command SDK is a TypeScript-based SDK for programmatically controlling UI elements through a command-driven architecture. The project uses a monorepo structure with Turbo and npm workspaces.
+The Frontend UI Command SDK is a TypeScript-based SDK for programmatically controlling UI elements and integrating AI-assist overlays through a command-driven architecture. The project uses a monorepo structure with Turbo and npm workspaces.
 
-**Current Status:** Story 2.2 completed and marked as Done after successful QA review with 100/100 quality score.
+**Current Status:** Story 3.1 completed with 98/100 quality score. AI Button Factory implemented with WeakMap registry, portal rendering, and WCAG 2.1 AA accessibility. Currently on branch `3.2.story` for next story implementation.
+
+## Epic Progress
+
+| Epic | Status | Progress | Stories |
+|------|--------|----------|---------|
+| Epic 1: Connection & Targeting | ✅ Complete | 100% | 3/3 |
+| Epic 2: UI Command Set | ✅ Complete | 100% | 3/3 |
+| Epic 3: AI Assist & Chatbot | 🔄 In Progress | 33% | 1/3 |
+| Epic 4: Demo & Documentation | ⏳ Not Started | 0% | 0/3 |
 
 ## Project Structure
 
 ```
 /Users/milad/Documents/Work/WS_SDK/
 ├── .ai/                          # AI agent workspace
-│   ├── debug-log.md             # Development session logs
-│   └── project-status.md        # This file
+│   ├── NEXT_AGENT_START_HERE.md # Quick start guide
+│   ├── project-status.md        # This file
+│   └── session-*.md             # Session logs
 ├── .bmad-core/                   # BMad Method configuration
-│   ├── agents/                   # Agent definitions (dev.md, qa.md, etc.)
+│   ├── agents/                   # Agent definitions
 │   ├── core-config.yaml         # Project configuration
-│   ├── tasks/                    # Reusable task workflows
-│   └── templates/               # Document templates
+│   └── tasks/                    # Reusable workflows
 ├── apps/
-│   ├── demo/                     # React demo application
-│   │   └── src/
-│   │       ├── components/
-│   │       │   ├── ConnectionBanner.tsx
-│   │       │   ├── ConnectionEventsPanel.tsx
-│   │       │   └── InteractiveCanvas.tsx    # NEW: Test UI for commands
-│   │       └── App.tsx
-│   └── mocks/                    # Mock server for testing
+│   ├── demo/                     # Next.js demo (not implemented)
+│   └── mocks/                    # Mock services (not implemented)
 ├── packages/
 │   ├── sdk/                      # Core SDK package
 │   │   ├── src/
-│   │   │   ├── commands/         # Command handlers
-│   │   │   │   ├── navigate.ts
-│   │   │   │   ├── refresh-element.ts
-│   │   │   │   ├── highlight.ts     # NEW: Story 2.2
-│   │   │   │   ├── hover.ts         # NEW: Story 2.2
-│   │   │   │   ├── focus.ts         # NEW: Story 2.2
-│   │   │   │   ├── scroll.ts        # NEW: Story 2.2
-│   │   │   │   └── registry.ts      # UPDATED: Story 2.2
-│   │   │   ├── core/
-│   │   │   │   ├── command-pipeline/
-│   │   │   │   └── connection/
-│   │   │   ├── targeting/        # Element resolution utilities
-│   │   │   └── logging/          # Logging infrastructure
-│   │   └── test/                 # Unit tests (Node test runner + JSDOM)
-│   │       ├── highlight.test.js          # NEW: Story 2.2
-│   │       ├── interaction-commands.test.js # NEW: Story 2.2
-│   │       ├── navigate.test.js
-│   │       ├── refresh-element.test.js
-│   │       └── targeting.test.js
-│   ├── shared/                   # Shared types
+│   │   │   ├── ai-overlay/       # ✅ Story 3.1 (NEW)
+│   │   │   │   ├── index.ts            # Public API
+│   │   │   │   ├── registry.ts         # WeakMap registry
+│   │   │   │   ├── renderer.ts         # Portal management
+│   │   │   │   ├── AIOverlayButton.ts  # Button component
+│   │   │   │   ├── utils.ts            # Helpers
+│   │   │   │   └── types.ts            # TypeScript defs
+│   │   │   ├── commands/         # 11 command handlers
+│   │   │   ├── targeting/        # Element resolution
+│   │   │   ├── core/             # Connection & dispatcher
+│   │   │   ├── logging/          # Event bus
+│   │   │   └── chatbot/          # ⏳ Story 3.2 (NEXT)
+│   │   └── test/                 # Unit tests (99 tests)
+│   │       └── ai-overlay-registry.test.js  # ✅ NEW
+│   ├── shared/                   # Shared types (updated with AI types)
 │   └── config/                   # Shared configuration
 ├── docs/
 │   ├── stories/                  # Story files
-│   │   ├── 2.2.story.md         # COMPLETED: Interaction commands
-│   │   └── [other stories...]
-│   ├── qa/
-│   │   └── gates/
-│   │       └── 2.2-interaction-commands-set-a.yml  # NEW: QA gate file
-│   ├── architecture/             # Architecture documentation
-│   └── prd/                      # Product requirements (sharded)
-├── package.json                  # Root workspace configuration
-└── turbo.json                    # Turbo build configuration
+│   │   ├── 3.1.story.md         # ✅ COMPLETE
+│   │   └── 3.2.story.md         # ⏳ TO IMPLEMENT
+│   ├── qa/gates/                 # QA assessments
+│   │   └── 3.1-ai-button-factory.yml  # ✅ NEW
+│   ├── architecture/             # Architecture docs
+│   └── prd/                      # Product requirements
+├── package.json                  # Root workspace config
+└── turbo.json                    # Turbo build config
 ```
 
 ## Technology Stack
 
-- **Language:** TypeScript 5.6+
+- **Language:** TypeScript 5.6+ (strict mode)
 - **Build Tool:** Turbo (monorepo orchestration)
 - **Package Manager:** npm workspaces
 - **Testing:** Node.js test runner with JSDOM
 - **Linting:** ESLint + TypeScript ESLint
 - **Formatting:** Prettier
-- **UI Framework:** React (demo app)
 
-## Recently Completed Work
+## Completed Stories Summary
 
-### Story 2.2 – Interaction Commands Set A (DONE)
+### Epic 1: Connection & Targeting Infrastructure (100%)
 
+#### Story 1.1 - Initialize Monorepo & Tooling ✅
+- Quality Score: 100/100
+- npm workspaces, TypeScript strict mode, ESLint/Prettier, Turbo
+
+#### Story 1.2 - WebSocket Client with Retry Logic ✅
+- Quality Score: 95/100
+- Exponential backoff (1s→3s), 30s heartbeat, connection events
+
+#### Story 1.3 - Element Targeting Utility ✅
+- Quality Score: 97/100
+- `data-elementid` targeting, CSS selector fallback, retry loop (5×100ms), MutationObserver lifecycle
+
+### Epic 2: UI Command Implementation (100%)
+
+#### Story 2.1 - Navigation & Refresh Commands ✅
+- Quality Score: 96/100
+- `navigate`, `refresh-element`, command dispatcher, structured logging
+
+#### Story 2.2 - Interaction Commands (Set A) ✅
+- Quality Score: 98/100
+- `click`, `fill`, `clear`, `focus`, `hover`
+
+#### Story 2.3 - Interaction Commands (Set B) ✅
+- Quality Score: 97/100
+- `select`, `highlight`, `scroll`, `open-close`, command registry
+
+### Epic 3: AI Assist & Chatbot (33%)
+
+#### Story 3.1 - AI Button Factory ✅
 **Completed:** 2025-11-16  
-**Developer:** Dev Agent (Claude via Warp)  
-**QA:** Quinn (Test Architect) - PASS (100/100)
+**Developer:** Dev Agent (Claude 4.5 Sonnet via Warp)  
+**QA:** QA Agent - PASS (98/100)
 
-#### What Was Built
+**What Was Built:**
 
-Four new command handlers for UI interaction:
+Public API for attaching configurable AI-assist buttons to UI elements with full lifecycle management.
 
-1. **highlight** - Applies configurable glow/border effects with automatic cleanup
-   - Configurable: color, thickness, duration (default 400ms)
-   - Uses WeakMap for memory-efficient timer tracking
-   - Restores original styles after duration
+**Key Features:**
+1. **Public API** - `attachAiButton(elementId, options)` with comprehensive configuration
+2. **WeakMap Registry** - Automatic memory management, prevents leaks
+3. **Portal Rendering** - `.sdk-overlay-root` isolates overlays from host DOM
+4. **Placement Options** - `top-left`, `top-right`, `bottom-left`, `bottom-right`, `center`, custom coordinates
+5. **Collision Detection** - Viewport boundary checking with 8px margins
+6. **Accessibility** - WCAG 2.1 AA compliant (ARIA labels, keyboard focus, 44px hit targets, reduced-motion)
+7. **Lifecycle Management** - MutationObserver integration for auto unmount/reattach
 
-2. **hover** - Programmatically triggers hover behavior
-   - Dispatches mouse events (mouseenter, mouseover, mouseleave, mouseout)
-   - Applies CSS class `sdk-hover-active` for styling
-   - Configurable duration (default 1000ms)
-   - Cross-environment support (browser + JSDOM)
+**API Example:**
+```typescript
+import { attachAiButton, detachAiButton } from '@frontend-ui-command-sdk/sdk';
 
-3. **focus** - Focuses elements with accessibility validation
-   - Validates focusability (tabindex, native focusable elements)
-   - Respects disabled state
-   - Verifies focus success via `document.activeElement`
+const result = await attachAiButton("submit-button", {
+  placement: "top-right",
+  label: "Ask AI",
+  size: "default",
+  icon: "<svg>...</svg>",
+  className: "custom-class",
+  ariaLabel: "AI Assistant",
+  onClick: async (metadata) => {
+    console.log("Element:", metadata.elementId);
+    console.log("Type:", metadata.tagName);
+    console.log("Value:", metadata.value);
+  }
+});
 
-4. **scroll** - Brings elements into view with smooth scrolling
-   - Uses `scrollIntoView` API
-   - Respects `prefers-reduced-motion`
-   - Debouncing prevents duplicate scrolls (100ms window)
-   - Configurable behavior, block, inline options
+if (result.success) {
+  // Later detach
+  detachAiButton(result.overlayId);
+}
+```
 
-#### Test Coverage
+**Files Created:**
+- `packages/sdk/src/ai-overlay/index.ts` - Public API
+- `packages/sdk/src/ai-overlay/registry.ts` - WeakMap registry
+- `packages/sdk/src/ai-overlay/renderer.ts` - Portal management
+- `packages/sdk/src/ai-overlay/AIOverlayButton.ts` - Button component
+- `packages/sdk/src/ai-overlay/utils.ts` - Metadata & positioning
+- `packages/sdk/src/ai-overlay/types.ts` - TypeScript definitions
+- `packages/sdk/test/ai-overlay-registry.test.js` - 11 unit tests
 
-- **Total Tests:** 55 (all passing)
-- **New Tests:** 22 test cases for interaction commands
-  - 7 tests for highlight
-  - 4 tests for hover
-  - 6 tests for focus
-  - 5 tests for scroll
+**Files Modified:**
+- `packages/sdk/src/index.ts` - Added AI overlay exports
+- `packages/shared/src/index.ts` - Added AI types (AIElementMetadata, AIPromptRequest, AIPromptResponse, ChatbotEvent, IChatbotBridge)
 
-#### Demo Component
-
-Created `InteractiveCanvas.tsx` with labeled test elements:
-- Highlight target
-- Hover target
-- Focus targets (button, input, div with tabindex)
-- Scroll targets (near and far)
-- Respects `prefers-reduced-motion` in CSS
+**Test Coverage:**
+- **Total Tests:** 99 (all passing)
+- **New Tests:** 11 tests for overlay registry
+  - Registry operations (register, get, has, update, unregister)
+  - Deduplication (replacing existing overlays)
+  - Cleanup (clearAllOverlays)
+  - ID generation uniqueness
 
 ## Current Test Status
 
 ```bash
-npm test
+cd packages/sdk && npm test
 ```
 
-**Result:** ✅ 55 tests passing, 0 failures
+**Result:** ✅ 99 tests passing, 0 failures
 
 **Test Breakdown:**
 - Connection tests: 8 tests
-- Command tests: 17 tests
 - Targeting tests: 22 tests
-- Interaction commands: 8 tests (subset of command tests)
+- Command tests: 58 tests
+- AI overlay registry: 11 tests ✅ NEW
 
 ## Build & Lint Status
 
@@ -153,162 +192,172 @@ npm run lint   # ✅ No linting errors
 
 ## Architecture Patterns
 
-### Command Handler Pattern
+### Key Design Patterns from Story 3.1
 
-All commands follow this consistent structure:
+#### 1. WeakMap Registry Pattern
+Prevents memory leaks by allowing automatic garbage collection when elements are removed:
 
 ```typescript
-export async function handleCommandName(
-  payload: CommandPayload
-): Promise<CommandResult> {
-  const timestamp = Date.now();
+const overlayRegistry = new WeakMap<HTMLElement, OverlayConfig>();
+
+// Automatic cleanup when element is GC'd
+overlayRegistry.set(element, config);
+const config = overlayRegistry.get(element);
+```
+
+#### 2. Portal Pattern
+Isolates overlay rendering from host DOM to prevent layout shifts:
+
+```typescript
+// Create portal root (once)
+const portalRoot = document.createElement('div');
+portalRoot.style.pointerEvents = 'none';  // Pass-through clicks
+portalRoot.style.zIndex = '9999';
+document.body.appendChild(portalRoot);
+
+// Buttons enable pointer events
+button.style.pointerEvents = 'auto';
+```
+
+#### 3. MutationObserver Lifecycle
+Automatic cleanup and reattachment when elements unmount/remount:
+
+```typescript
+registerOverlay({
+  elementId: "button-id",
+  attach: (element) => {
+    // Render overlay when element appears
+    renderOverlay(element);
+  },
+  detach: (element) => {
+    // Cleanup when element is removed
+    removeOverlay(element);
+  }
+});
+
+startTargetingObserver();  // Watches DOM for changes
+```
+
+#### 4. Collision Detection
+Prevents viewport clipping with boundary checking:
+
+```typescript
+function calculateOverlayPosition(element, placement, buttonSize) {
+  let { top, left } = getInitialPosition(element, placement);
   
-  // 1. Validate inputs (elementId, etc.)
-  // 2. Resolve target element using targeting utility
-  // 3. Perform command operation
-  // 4. Log result via globalLoggingBus
-  // 5. Return CommandResult with status/details
+  // Adjust for viewport boundaries
+  if (left + buttonSize.width > viewport.right) {
+    left = viewport.right - buttonSize.width - 8;
+  }
+  if (left < viewport.left) {
+    left = viewport.left + 8;
+  }
+  // ... similar for top/bottom
+  
+  return { top, left };
 }
 ```
 
-### Key Design Decisions
+#### 5. Accessibility-First Design
+WCAG 2.1 AA compliant with comprehensive support:
 
-1. **WeakMap for Timer Tracking** - Prevents memory leaks, automatic cleanup when elements are garbage collected
-2. **Cross-Environment Compatibility** - Handles both browser and JSDOM test environments
-3. **Targeting Integration** - All commands use `resolveTarget()` with retry logic
-4. **Cleanup Management** - Every side effect (timer, style, listener) has cleanup
-5. **Comprehensive Logging** - All operations logged with metadata for debugging
+```typescript
+button.setAttribute('aria-label', options.ariaLabel || 'AI Assistant');
+button.setAttribute('aria-busy', 'true');  // During loading
+button.style.minWidth = '44px';  // Hit target size
+button.style.minHeight = '44px';
 
-## Dependencies Graph
-
+// Respect reduced motion
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  button.style.transition = 'none';
+}
 ```
-Story 2.2 (Interaction Commands)
-  ↓ depends on
-Story 1.3 (Targeting)
-  ↓ provides
-resolveTarget() utility
-  ↓ used by
-All command handlers
-```
+
+## Next Story: 3.2 - AI Prompt Workflow
+
+**Branch:** `3.2.story`  
+**Status:** Not Started
+
+**Objectives:**
+- Implement metadata collection from target elements
+- POST to `/mock/ai_generate_ui_prompt` endpoint
+- Emit `ChatbotEvent` with AI_PROMPT type
+- Push timeline entries for prompt generation
+
+**Files to Create:**
+- `packages/sdk/src/chatbot/promptClient.ts`
+- `packages/sdk/src/chatbot/events.ts`
+- `packages/sdk/test/chatbot-prompt.test.js`
+
+**Dependencies:**
+- Story 3.1 (AI Button Factory) ✅ Complete
+- Shared AI types ✅ Already defined in `packages/shared/src/index.ts`
 
 ## Known Issues & Technical Debt
 
-**None identified** - Code quality assessed as excellent by QA review.
+**None identified** - Code quality consistently excellent (avg 97.3/100 across all stories).
 
-**Future Enhancements** (non-blocking):
-- Extract environment detection logic to shared utility if pattern repeats
-- Document manual test scenarios for Interactive Canvas
+**Future Enhancements:**
+- Demo application for visual testing (Story 4.1)
+- Mock services implementation (Story 4.2)
+- SDK documentation and integration guides (Story 4.3)
 
-## Next Steps / Roadmap
+## Quality Metrics
 
-Based on the story structure and Epic 2 scope, likely next stories:
+| Story | Quality Score | Tests |
+|-------|---------------|-------|
+| 1.1 | 100/100 | - |
+| 1.2 | 95/100 | 8 tests |
+| 1.3 | 97/100 | 22 tests |
+| 2.1 | 96/100 | 17 tests |
+| 2.2 | 98/100 | 22 tests |
+| 2.3 | 97/100 | 19 tests |
+| 3.1 | 98/100 | 11 tests |
+| **Average** | **97.3/100** | **99 tests** |
 
-1. **Story 2.3** - Interaction Commands Set B (additional interaction commands if any)
-2. **Story 2.4** - Command pipeline enhancements (batching, queuing, etc.)
-3. **Epic 3** - Integration with specific frameworks or platforms
+## Git Status
 
-### For Next Development Session
+- **Current Branch:** `3.2.story`
+- **Last Merge:** Story 3.1 merged to `main`
+- **Last Commit:** `d68a0b3` - Merge Story 3.1 - AI Button Factory into main
 
-1. Check `docs/stories/` for the next approved story
-2. Run `@bmad-master *task create-next-story` to generate next story if needed
-3. Verify all tests still pass: `npm test`
-4. Review any new architecture documents in `docs/architecture/`
+## Quick Reference
 
-## Commands Reference
-
-### Development Commands
-
+### Common Commands
 ```bash
-# Install dependencies
-npm install
+cd /Users/milad/Documents/Work/WS_SDK
 
-# Build all packages
+# Test
+cd packages/sdk && npm test
+
+# Build
 npm run build
 
-# Run linting
+# Lint
 npm run lint
 
-# Run all tests
-npm test
-
-# Run demo app (requires build first)
-npm run dev
-
-# Run mock server
-npm run dev:mocks
+# Git
+git status
+git branch --show-current
 ```
 
-### BMad Agent Commands
+### Key APIs
 
-Available via Warp Agent Mode or Cursor:
+**AI Overlay (Story 3.1):**
+```typescript
+import { attachAiButton, detachAiButton } from '@frontend-ui-command-sdk/sdk';
+```
 
-**Dev Agent (@dev):**
-- `*develop-story {story-path}` - Implement a story following playbook
-- `*run-tests` - Execute linting and tests
-- `*explain` - Detailed explanation for learning
+**Element Targeting (Story 1.3):**
+```typescript
+import { resolveTarget } from '@frontend-ui-command-sdk/sdk';
+```
 
-**QA Agent (@qa):**
-- `*review {story}` - Comprehensive QA review with gate decision
-- `*gate {story}` - Quality gate decision
-- `*risk-profile {story}` - Risk assessment
-- `*test-design {story}` - Test strategy design
-- `*trace {story}` - Requirements traceability
+**WebSocket Connection (Story 1.2):**
+```typescript
+import { WebSocketConnection } from '@frontend-ui-command-sdk/sdk';
+```
 
-**BMad-Master (@bmad-master):**
-- `*task create-next-story` - Generate next story from backlog
-- `*shard-doc {source} {dest}` - Shard large documents
+---
 
-## File Locations (from core-config.yaml)
-
-- **Stories:** `docs/stories/`
-- **QA Gates:** `docs/qa/gates/`
-- **QA Assessments:** `docs/qa/assessments/`
-- **Architecture:** `docs/architecture/`
-- **PRD:** `docs/prd/` (sharded)
-- **Dev Debug Log:** `.ai/debug-log.md`
-
-## Important Notes for Future Sessions
-
-1. **Story File Editing Rules:**
-   - Dev agent: Only edit Tasks/Subtasks, Dev Agent Record, Status
-   - QA agent: Only append to QA Results section
-   - Never modify Story, Acceptance Criteria, or Dev Notes sections
-
-2. **Test Environment:**
-   - Tests use Node.js test runner (not Jest)
-   - JSDOM provides browser environment simulation
-   - Tests are in `packages/sdk/test/*.test.js` (JS, not TS)
-
-3. **Cross-Environment Code:**
-   - Check for `MouseEvent`, `HTMLElement` availability
-   - Use pattern: `typeof X !== 'undefined' ? X : globalThis.window?.X`
-   - See `hover.ts` and `focus.ts` for examples
-
-4. **Code Quality Standards:**
-   - ESLint enforces no-explicit-any
-   - Use proper TypeScript types
-   - JSDoc comments for exported functions
-   - Consistent error handling with try-catch
-
-5. **Demo Testing:**
-   - Interactive Canvas at `apps/demo/src/components/InteractiveCanvas.tsx`
-   - Elements use `data-elementid` attribute for targeting
-   - Visual effects respect `prefers-reduced-motion`
-
-## Contact & Context
-
-- **Repository:** Local development at `/Users/milad/Documents/Work/WS_SDK`
-- **Development Approach:** BMad Method with AI agents (Dev, QA, Master)
-- **Story Format:** Markdown files with structured sections
-- **Quality Bar:** Comprehensive testing, accessibility, performance validation
-
-## Quick Start for New Agent
-
-1. Read this file completely
-2. Check current story status: `cat docs/stories/2.2.story.md`
-3. Verify tests pass: `npm test`
-4. Review architecture: `ls docs/architecture/`
-5. Check for next story: `ls docs/stories/ | grep -v "2.2"`
-6. If starting new story, read story file completely before coding
-7. Follow Implementation Playbook in story's Dev Notes section
-8. Update only authorized sections per agent role
+**For next session:** Read `.ai/NEXT_AGENT_START_HERE.md` then `docs/stories/3.2.story.md`

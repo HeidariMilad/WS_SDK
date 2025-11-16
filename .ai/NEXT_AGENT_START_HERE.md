@@ -4,10 +4,10 @@
 
 ## ✅ Current Status (2025-11-16)
 
-- ✅ **Story 2.2 COMPLETE** - Interaction Commands (highlight, hover, focus, scroll)
-- ✅ **All tests passing** - 55/55 tests green
-- ✅ **QA approved** - 100/100 quality score
-- ✅ **Ready for next story**
+- ✅ **Story 3.1 COMPLETE** - AI Button Factory with WeakMap registry & accessibility
+- ✅ **All tests passing** - 99/99 tests green
+- ✅ **QA approved** - 98/100 quality score
+- ✅ **Merged to main** - Story 3.1 complete, on branch `3.2.story` for next story
 
 ## 🎯 Your First 5 Steps
 
@@ -15,18 +15,18 @@
 
 ```bash
 cd /Users/milad/Documents/Work/WS_SDK
-npm test
+cd packages/sdk && npm test
 ```
 
-**Expected:** ✅ "55 tests passing"
+**Expected:** ✅ "99 tests passing"
 
-### 2. Check Available Stories (30 seconds)
+### 2. Check Current Branch (10 seconds)
 
 ```bash
-ls docs/stories/*.md
+git branch --show-current
 ```
 
-Look for stories NOT marked as "Done" in their Status section.
+**Expected:** `3.2.story` (Story 3.2 - AI Prompt Workflow)
 
 ### 3. Read Project Status (2 minutes)
 
@@ -34,209 +34,109 @@ Look for stories NOT marked as "Done" in their Status section.
 cat .ai/project-status.md
 ```
 
-This file has EVERYTHING: structure, patterns, commands, gotchas.
+This file has EVERYTHING: completed stories, architecture, patterns.
 
 ### 4. Review Last Session (1 minute)
 
 ```bash
-cat .ai/session-2025-11-16.md
+cat .ai/session-2025-11-16-story-3.1.md
 ```
 
-See what was just completed and learned.
+See Story 3.1 implementation details (AI Button Factory).
 
-### 5. Pick Your Path (1 minute)
+### 5. Start Story 3.2 (1 minute)
 
-**Option A: Continue Development**
-- Find next approved story in `docs/stories/`
-- Read story file completely
-- Run: `*develop-story docs/stories/{story-file}.md`
+```bash
+cat docs/stories/3.2.story.md
+```
 
-**Option B: Create Next Story**
-- Run: `@bmad-master *task create-next-story`
-- Review generated story
-- Get it approved by stakeholder
-- Then develop it
+Read the story file for AI Prompt Workflow implementation.
 
-## 🔑 Key Files to Know
+## 🔑 Key Files
 
 | File | Purpose |
 |------|---------|
-| `.ai/project-status.md` | Complete project state & architecture |
-| `.ai/session-2025-11-16.md` | Latest work completed |
-| `docs/stories/2.2.story.md` | Example of completed story |
-| `.bmad-core/core-config.yaml` | Project configuration |
-| `.bmad-core/agents/dev.md` | Your dev agent definition |
-| `.bmad-core/agents/qa.md` | QA agent definition |
+| `.ai/project-status.md` | Complete project state & all completed stories |
+| `.ai/session-2025-11-16-story-3.1.md` | Story 3.1 completion session |
+| `docs/stories/3.2.story.md` | Current story to implement |
+| `packages/sdk/src/ai-overlay/` | AI Button Factory (Story 3.1) |
 
 ## 📋 Essential Commands
 
-### Development
 ```bash
-npm install          # Install dependencies
-npm run build        # Build all packages
-npm run lint         # Check code quality
-npm test             # Run all tests
-npm run dev          # Start demo app
-```
-
-### BMad Agent Commands
-```bash
-*develop-story {path}   # Implement a story (Dev agent)
-*review {story}         # QA review (QA agent)
-*run-tests              # Quick test execution
-*help                   # Show available commands
+npm install                # Install dependencies
+cd packages/sdk && npm test  # Run tests
+npm run build              # Build all
+npm run lint               # Check code quality
+git status                 # Check current state
 ```
 
 ## ⚠️ Critical Rules
 
-### 1. Story File Editing
-- **Dev Agent:** Only edit Tasks/Subtasks, Dev Agent Record, Status
-- **QA Agent:** Only append to QA Results section
-- **NEVER** modify Story, Acceptance Criteria, or Dev Notes sections
+1. **Story File Editing**
+   - Dev Agent: Only edit Tasks/Subtasks, Dev Agent Record, Status
+   - QA Agent: Only append to QA Results
+   - NEVER modify Story/AC sections
 
-### 2. Test Requirements
-- Tests use Node.js test runner (NOT Jest)
-- Tests are `.test.js` files in `packages/sdk/test/`
-- JSDOM provides browser simulation
-- Must handle cross-environment constructors
+2. **Tests Must Pass**
+   - 99/99 tests must stay green
+   - Use Node.js test runner + JSDOM
+   - Tests in `packages/sdk/test/`
 
-### 3. Code Quality
-- TypeScript strict mode required
-- ESLint must pass (no-explicit-any enforced)
-- JSDoc comments for exported functions
-- Follow patterns from `packages/sdk/src/commands/navigate.ts`
+3. **Code Quality**
+   - TypeScript strict mode
+   - ESLint must pass
+   - JSDoc for exports
 
-## 🎨 Code Patterns to Follow
+## 🎨 Key Patterns from Story 3.1
 
-### Command Handler Pattern
+### WeakMap Registry
 ```typescript
-export async function handleCommandName(
-  payload: CommandPayload
-): Promise<CommandResult> {
-  const timestamp = Date.now();
-  
-  // 1. Validate elementId
-  if (!payload.elementId) {
-    return warningResult("requires elementId");
-  }
-  
-  // 2. Resolve target
-  const resolution = await resolveTarget({ elementId });
-  if (!resolution.element) {
-    return warningResult("element not found");
-  }
-  
-  // 3. Perform operation with try-catch
-  try {
-    // do work
-    return successResult;
-  } catch (error) {
-    return errorResult(error);
-  }
-}
+const registry = new WeakMap<HTMLElement, Config>();
+registry.set(element, config);  // Auto GC
 ```
 
-### Cross-Environment Constructor Access
+### Portal Pattern
 ```typescript
-const Constructor = typeof GlobalConstructor !== 'undefined' 
-  ? GlobalConstructor 
-  : (globalThis as unknown as { 
-      window?: { GlobalConstructor?: typeof GlobalConstructor } 
-    }).window?.GlobalConstructor;
+const portal = document.createElement('div');
+portal.style.pointerEvents = 'none';
+button.style.pointerEvents = 'auto';
 ```
 
-### WeakMap for Timer Tracking
+### MutationObserver Lifecycle
 ```typescript
-const timers = new WeakMap<Element, number>();
-
-// Set timer
-const timeoutId = setTimeout(() => cleanup(), duration);
-timers.set(element, timeoutId);
-
-// Clear existing
-const existing = timers.get(element);
-if (existing) clearTimeout(existing);
+registerOverlay({
+  elementId: "btn",
+  attach: (el) => { /*  render */ },
+  detach: (el) => { /* cleanup */ }
+});
 ```
 
-## 🐛 Common Gotchas
-
-1. **JSDOM Environment**
-   - MouseEvent/HTMLElement not globally available
-   - Must check `typeof Constructor !== 'undefined'`
-   - Mock scrollIntoView in tests
-
-2. **ESLint Errors**
-   - Don't use `as any` - use proper type assertions
-   - Pattern: `as unknown as { ... }`
-
-3. **Test Timing**
-   - Use `await new Promise(resolve => setTimeout(resolve, ms))`
-   - Don't forget to wait for async cleanup
-
-4. **Build Issues**
-   - Use `globalThis` not `global`
-   - Import types from `@frontend-ui-command-sdk/shared`
-
-## 📁 Project Structure (Quick View)
+## 📁 Project Structure
 
 ```
-WS_SDK/
-├── packages/sdk/src/commands/    ← Add new commands here
-├── packages/sdk/test/             ← Add tests here
-├── apps/demo/src/components/      ← Demo UI components
-├── docs/stories/                  ← Story definitions
-└── docs/qa/gates/                 ← QA approval files
+packages/sdk/src/
+├── ai-overlay/        ✅ Story 3.1 (NEW)
+├── commands/          ✅ Epic 2
+├── targeting/         ✅ Story 1.3
+├── core/              ✅ Stories 1.2, 2.1
+└── chatbot/           ⏳ Story 3.2 (NEXT)
 ```
 
-## 🎓 Learning Resources
+## 🚦 Story 3.2 Context
 
-**To understand the codebase:**
-1. Read `packages/sdk/src/commands/highlight.ts` - Latest, cleanest example
-2. Read `packages/sdk/test/highlight.test.js` - Test pattern
-3. Read `docs/stories/2.2.story.md` - Story structure
+**Goal:** AI prompt generation workflow
 
-**To understand patterns:**
-1. WeakMap usage: `highlight.ts` line 26, 104-138
-2. Cross-env: `hover.ts` line 114, `focus.ts` line 10
-3. Targeting: All commands use `resolveTarget()`
+**Tasks:**
+- Collect metadata on button click
+- POST to `/mock/ai_generate_ui_prompt`
+- Emit ChatbotEvent
+- Add timeline entry
 
-## 🚦 Before You Start Coding
-
-- [ ] Tests pass (`npm test`)
-- [ ] Story file read completely
-- [ ] Story status is "Approved" (not "Draft")
-- [ ] Dev Notes section reviewed
-- [ ] Implementation Playbook understood
-- [ ] File List location known (for completion)
-
-## 🎉 When You're Done
-
-1. Update story Tasks/Subtasks with [x]
-2. Fill in Dev Agent Record section
-3. Update File List with created/modified files
-4. Add Change Log entry
-5. Run tests: `npm test`
-6. Run lint: `npm run lint`
-7. Set story Status to "Ready for Review"
-8. Hand off to QA agent for review
-
-## 💬 Need Help?
-
-1. Check `.ai/project-status.md` - Comprehensive reference
-2. Check `.ai/session-2025-11-16.md` - Latest session details
-3. Read similar completed story: `docs/stories/2.2.story.md`
-4. Review command pattern: `packages/sdk/src/commands/navigate.ts`
-
-## 📊 Current Metrics
-
-- **Total Tests:** 55 ✅
-- **Test Coverage:** 4 command types + targeting + connection
-- **Quality Score:** 100/100 (Story 2.2)
-- **Build Time:** ~900ms
-- **Test Time:** ~1.8s
+**Files to Create:**
+- `packages/sdk/src/chatbot/promptClient.ts`
+- `packages/sdk/src/chatbot/events.ts`
 
 ---
 
-**You're all set! Start with step 1 above. Good luck! 🚀**
-
-*Last updated: 2025-11-16 by Dev Agent (Claude via Warp)*
+**Ready?** Read `.ai/project-status.md` then `docs/stories/3.2.story.md`
