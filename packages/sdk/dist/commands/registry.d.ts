@@ -3,7 +3,7 @@ import type { NavigationRouter } from "./navigate";
 /**
  * Register all command handlers with the dispatcher.
  *
- * Registers: navigate, refresh_element, highlight, hover, focus, scroll
+ * Registers: navigate, refresh_element, highlight, hover, focus, scroll, click, fill, clear, select, open, close
  *
  * @param dispatcher - Command dispatcher instance
  * @param router - Optional navigation router (required for navigate command)
