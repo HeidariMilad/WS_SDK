@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { CommandResult } from "@frontend-ui-command-sdk/shared";
-import type { ConnectionState } from "@frontend-ui-command-sdk/sdk";
+import type { ConnectionState, NavigationRouter } from "@frontend-ui-command-sdk/sdk";
 import {
   CommandDispatcher,
   createWebSocketCommandClient,
+  registerCommandHandlers,
 } from "@frontend-ui-command-sdk/sdk";
 import { getDemoWebSocketUrl } from "../config/connection";
 
@@ -30,6 +31,28 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     const dispatcher = new CommandDispatcher();
     dispatcherRef.current = dispatcher;
 
+    // Provide a minimal router implementation for demo (SPA-style navigation)
+    const router: NavigationRouter = {
+      push: (path: string) => {
+        try {
+          window.history.pushState({}, "", path);
+          window.dispatchEvent(new PopStateEvent("popstate"));
+        } catch {
+          // ignore navigation errors in demo
+        }
+      },
+      replace: (path: string) => {
+        try {
+          window.history.replaceState({}, "", path);
+          window.dispatchEvent(new PopStateEvent("popstate"));
+        } catch {
+          // ignore navigation errors in demo
+        }
+      },
+    };
+
+    const unregisterHandlers = registerCommandHandlers(dispatcher, router);
+
     const connection = createWebSocketCommandClient({
       url: getDemoWebSocketUrl(),
       dispatcher,
@@ -48,6 +71,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return () => {
       unsubscribeStatus();
       unsubscribeErrors();
+      unregisterHandlers();
       connection.disconnect({ reason: "ConnectionProvider unmounted" });
     };
   }, []);

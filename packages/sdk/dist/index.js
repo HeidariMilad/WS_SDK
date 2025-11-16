@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
+exports.registerCommandHandlers = exports.registerRefreshCallback = exports.handleRefreshElement = exports.unregisterNavigationRouter = exports.registerNavigationRouter = exports.handleNavigate = exports.clearAllOverlays = exports.stopTargetingObserver = exports.startTargetingObserver = exports.unregisterOverlay = exports.registerOverlay = exports.getTargetingGuidance = exports.buildWarningMessage = exports.resolveTargetBySelector = exports.resolveTargetByDataElementId = exports.resolveTarget = exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
 exports.placeholderSdk = placeholderSdk;
 function placeholderSdk() {
     return "frontend-ui-command-sdk placeholder";
@@ -27,4 +27,28 @@ var dispatcher_1 = require("./core/command-pipeline/dispatcher");
 Object.defineProperty(exports, "CommandDispatcher", { enumerable: true, get: function () { return dispatcher_1.CommandDispatcher; } });
 var webSocketCommandClient_1 = require("./core/command-pipeline/webSocketCommandClient");
 Object.defineProperty(exports, "createWebSocketCommandClient", { enumerable: true, get: function () { return webSocketCommandClient_1.createWebSocketCommandClient; } });
+// Targeting utilities
+var targeting_1 = require("./targeting");
+Object.defineProperty(exports, "resolveTarget", { enumerable: true, get: function () { return targeting_1.resolveTarget; } });
+Object.defineProperty(exports, "resolveTargetByDataElementId", { enumerable: true, get: function () { return targeting_1.resolveTargetByDataElementId; } });
+Object.defineProperty(exports, "resolveTargetBySelector", { enumerable: true, get: function () { return targeting_1.resolveTargetBySelector; } });
+var utils_1 = require("./targeting/utils");
+Object.defineProperty(exports, "buildWarningMessage", { enumerable: true, get: function () { return utils_1.buildWarningMessage; } });
+Object.defineProperty(exports, "getTargetingGuidance", { enumerable: true, get: function () { return utils_1.getTargetingGuidance; } });
+var lifecycle_1 = require("./targeting/lifecycle");
+Object.defineProperty(exports, "registerOverlay", { enumerable: true, get: function () { return lifecycle_1.registerOverlay; } });
+Object.defineProperty(exports, "unregisterOverlay", { enumerable: true, get: function () { return lifecycle_1.unregisterOverlay; } });
+Object.defineProperty(exports, "startTargetingObserver", { enumerable: true, get: function () { return lifecycle_1.startTargetingObserver; } });
+Object.defineProperty(exports, "stopTargetingObserver", { enumerable: true, get: function () { return lifecycle_1.stopTargetingObserver; } });
+Object.defineProperty(exports, "clearAllOverlays", { enumerable: true, get: function () { return lifecycle_1.clearAllOverlays; } });
+// Command handlers
+var navigate_1 = require("./commands/navigate");
+Object.defineProperty(exports, "handleNavigate", { enumerable: true, get: function () { return navigate_1.handleNavigate; } });
+Object.defineProperty(exports, "registerNavigationRouter", { enumerable: true, get: function () { return navigate_1.registerNavigationRouter; } });
+Object.defineProperty(exports, "unregisterNavigationRouter", { enumerable: true, get: function () { return navigate_1.unregisterNavigationRouter; } });
+var refresh_element_1 = require("./commands/refresh-element");
+Object.defineProperty(exports, "handleRefreshElement", { enumerable: true, get: function () { return refresh_element_1.handleRefreshElement; } });
+Object.defineProperty(exports, "registerRefreshCallback", { enumerable: true, get: function () { return refresh_element_1.registerRefreshCallback; } });
+var registry_1 = require("./commands/registry");
+Object.defineProperty(exports, "registerCommandHandlers", { enumerable: true, get: function () { return registry_1.registerCommandHandlers; } });
 //# sourceMappingURL=index.js.map

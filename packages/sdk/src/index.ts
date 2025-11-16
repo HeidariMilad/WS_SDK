@@ -20,3 +20,17 @@ export {
   clearAllOverlays,
 } from "./targeting/lifecycle";
 export type { OverlayRegistration } from "./targeting/lifecycle";
+
+// Command handlers
+export {
+  handleNavigate,
+  registerNavigationRouter,
+  unregisterNavigationRouter,
+} from "./commands/navigate";
+export type { NavigationRouter } from "./commands/navigate";
+export {
+  handleRefreshElement,
+  registerRefreshCallback,
+} from "./commands/refresh-element";
+export type { RefreshCallback } from "./commands/refresh-element";
+export { registerCommandHandlers } from "./commands/registry";

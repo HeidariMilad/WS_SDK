@@ -1,5 +1,5 @@
 export declare const SHARED_PLACEHOLDER = "shared-types-placeholder";
-export type CommandStatus = "ok" | "error";
+export type CommandStatus = "ok" | "error" | "warning";
 /**
  * Core payload shape used for streaming UI commands over WebSocket.
  *
@@ -25,6 +25,14 @@ export interface CommandPayload {
     requestId?: string;
 }
 /**
+ * Warning emitted when target resolution fails or encounters issues.
+ */
+export interface TargetResolutionWarning {
+    elementId?: string;
+    selector?: string;
+    reason: "not-found" | "invalid-selector" | "no-target-provided" | "multiple-matches";
+}
+/**
  * Structured result used for logging command and connection outcomes.
  */
 export interface CommandResult {
@@ -45,5 +53,9 @@ export interface CommandResult {
      * Origin of the result (e.g., connection, dispatcher, ui).
      */
     source?: "connection" | "dispatcher" | "ui" | string;
+    /**
+     * Optional array of targeting warnings when status is "warning".
+     */
+    warnings?: TargetResolutionWarning[];
 }
 //# sourceMappingURL=index.d.ts.map
