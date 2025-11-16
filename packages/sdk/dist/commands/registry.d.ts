@@ -1,7 +1,9 @@
 import type { CommandDispatcher } from "../core/command-pipeline/dispatcher";
 import type { NavigationRouter } from "./navigate";
 /**
- * Register navigate and refresh_element command handlers with the dispatcher.
+ * Register all command handlers with the dispatcher.
+ *
+ * Registers: navigate, refresh_element, highlight, hover, focus, scroll
  *
  * @param dispatcher - Command dispatcher instance
  * @param router - Optional navigation router (required for navigate command)
