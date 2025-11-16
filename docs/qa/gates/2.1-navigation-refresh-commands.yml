@@ -1,0 +1,82 @@
+schema: 1
+story: '2.1'
+story_title: 'Navigation & Refresh Commands'
+gate: PASS
+status_reason: 'All acceptance criteria met with comprehensive test coverage and production-ready implementation'
+reviewer: 'Quinn (Test Architect)'
+updated: '2025-11-16T14:30:51Z'
+
+top_issues: []
+
+waiver:
+  active: false
+
+quality_score: 100
+expires: '2025-11-30T14:30:51Z'
+
+evidence:
+  tests_reviewed: 34
+  tests_passing: 34
+  risks_identified: 0
+  trace:
+    ac_covered: [1, 2, 3]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'No injection vectors, safe logging, proper error handling'
+  performance:
+    status: PASS
+    notes: 'SPA navigation without full reload, lightweight refresh operations'
+  reliability:
+    status: PASS
+    notes: 'Graceful error handling, warnings for bad payloads, no exceptions thrown'
+  maintainability:
+    status: PASS
+    notes: 'Clean modular structure, comprehensive JSDoc, clear exports'
+
+test_coverage:
+  navigate_command:
+    - Router registration validation
+    - payload.value format support
+    - payload.options.path format support
+    - push vs replace navigation
+    - Missing destination path handling
+    - Missing payload handling
+    - Router error handling
+  refresh_element_command:
+    - Missing elementId validation
+    - Callback registration and invocation
+    - data-refresh-key attribute toggling
+    - Callback + attribute combined refresh
+    - Callback-only refresh method
+    - Attribute-only refresh method
+    - Multiple callbacks per element
+    - Element not found scenarios
+    - Idempotent refresh behavior
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Add command-specific icons and metadata for demo timeline entries'
+      refs: ['apps/demo/src/components/ConnectionEventsPanel.tsx']
+      priority: low
+    - action: 'Implement optional toast notifications on command completion'
+      refs: ['apps/demo']
+      priority: low
+    - action: 'Add "type": "module" to package.json to suppress ESM warnings'
+      refs: ['packages/sdk/package.json']
+      priority: low
+
+notes: |
+  Excellent implementation with comprehensive test coverage and production-ready quality.
+  
+  Strengths:
+  - Framework-agnostic NavigationRouter interface design
+  - Dual-mode refresh strategy (callbacks + attributes) provides flexibility
+  - All edge cases properly handled with warnings instead of exceptions
+  - Tests validate all critical paths and error scenarios
+  - Clean separation of concerns and modular architecture
+  
+  The story is complete and ready for Done status.

@@ -1,12 +1,19 @@
 
+
 > @frontend-ui-command-sdk/demo@0.1.0 lint
 > eslint . --ext .ts,.tsx || true
 
+[1G[0K=============
 
-Oops! Something went wrong! :(
+WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
 
-ESLint: 8.57.1
+You may find that it works just fine, or you may not.
 
-No files matching the pattern "." were found.
-Please check for typing mistakes in the pattern.
+SUPPORTED TYPESCRIPT VERSIONS: >=4.3.5 <5.4.0
 
+YOUR TYPESCRIPT VERSION: 5.9.3
+
+Please only submit bug reports when using the officially supported version.
+
+=============
+[1G[0K⠙[1G[0K
