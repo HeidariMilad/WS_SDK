@@ -44,6 +44,8 @@ export {
   detachAllAiButtons,
   getOverlayConfig,
   getOverlayConfigByElement,
+  setChatbotBridge,
+  getChatbotBridge,
 } from "./ai-overlay";
 export type {
   AttachAiButtonOptions,
