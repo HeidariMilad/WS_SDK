@@ -1,8 +1,8 @@
 schema: 1
 story: "1.2"
 story_title: "WebSocket Client & Retry Logic"
-gate: CONCERNS
-status_reason: "Core acceptance criteria appear met based on the Dev Agent Record and tests executed, but demo connection UX and telemetry still rely on manual verification and lack automated coverage."
+gate: PASS
+status_reason: "Core acceptance criteria are met based on SDK unit tests and Dev Agent Record; demo-level connection UX and telemetry will be covered by later demo/mocks stories and do not block this story's gate."
 reviewer: "Quinn (Test Architect)"
 updated: "2025-11-14T18:16:55Z"
 

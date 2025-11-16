@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "dev": "turbo dev",
+    "dev:mocks": "turbo dev --filter=@frontend-ui-command-sdk/mocks",
     "build": "turbo build",
     "lint": "turbo lint",
     "format": "turbo format",
