@@ -19,3 +19,18 @@ jobs:
         run: npm run lint --if-present
       - name: Build
         run: npm run build --if-present
+      - name: Start Mock Services (Background)
+        run: |
+          cd apps/mocks
+          npm run start &
+          npm run start:ws &
+          echo "Waiting for services to start..."
+          sleep 5
+        if: always()
+      - name: Run Integration Tests
+        run: npm run test:e2e --if-present
+        if: always()
+      - name: Stop Mock Services
+        run: |
+          pkill -f "tsx.*server.ts" || true
+        if: always()

@@ -38,6 +38,56 @@ npm run dev --filter=demo
 npm run dev --filter=mocks
 ```
 
+### Running Mock Services
+
+The mock services provide WebSocket and REST endpoints for testing the SDK:
+
+#### Start REST API Mock (AI Prompt Endpoint)
+
+```bash
+cd apps/mocks
+npm run dev          # Development mode with hot reload
+npm start            # Production mode
+```
+
+- **REST API**: `http://localhost:3000`
+- **Endpoint**: `POST /mock/ai_generate_ui_prompt`
+- **Health Check**: `GET /health`
+
+#### Start WebSocket Mock Server (Command Playlists)
+
+```bash
+cd apps/mocks
+npm run dev:ws       # Development mode with hot reload
+npm run start:ws     # Production mode
+```
+
+- **WebSocket**: `ws://localhost:8080`
+- **Available Playlists**: `basic`, `full`, `stress`
+- **Usage**: `ws://localhost:8080?playlist=basic&interval=1000&loop=true`
+
+#### Start Both Services Together
+
+```bash
+cd apps/mocks
+npm run dev:all      # Start both REST and WebSocket in development mode
+npm run start:all    # Start both in production mode
+```
+
+#### Command Playlists
+
+- **basic-playlist.json**: Covers all 12 command types with success scenarios
+- **full-playlist.json**: Comprehensive coverage with success, warning, and error scenarios
+- **stress-playlist.json**: High-volume command sequence for performance testing (100ms intervals)
+
+#### Configuration
+
+- **REST Port**: Set `PORT` environment variable (default: 3000)
+- **WebSocket Port**: Set `WS_PORT` environment variable (default: 8080)
+- **Playlist**: Query parameter `?playlist=basic|full|stress`
+- **Interval**: Query parameter `?interval=1000` (milliseconds between commands)
+- **Loop**: Query parameter `?loop=true` (repeat playlist)
+
 ### Build all packages
 
 ```bash
@@ -65,14 +115,14 @@ npm run test:e2e
 
 ## Current Status
 
-**Branch**: `3.2.story` | **Tests**: 99/99 ✅ | **Build**: Passing ✅
+**Branch**: `4.2.story` | **Tests**: 99/99 ✅ | **Build**: Passing ✅
 
 - ✅ **Epic 1**: Connection & Targeting (100%)
 - ✅ **Epic 2**: UI Command Set (100%)
 - 🔄 **Epic 3**: AI Assist & Chatbot (33% - Story 3.1 complete)
-- ⏳ **Epic 4**: Demo & Documentation (0%)
+- 🔄 **Epic 4**: Demo & Documentation (33% - Story 4.2 complete)
 
-**Latest**: Story 3.1 - AI Button Factory with WeakMap registry, portal rendering, and WCAG 2.1 AA accessibility ✅
+**Latest**: Story 4.2 - Mock WebSocket and REST services with command playlists ✅
 
 ## Documentation
 
@@ -98,8 +148,10 @@ npm run test:e2e
 ### In Progress 🔄
 - **AI Prompt Workflow** - Metadata collection and prompt generation (Story 3.2)
 - **Chatbot Bridge** - IChatbotBridge interface implementation (Story 3.3)
+- **Demo Application** - Interactive Next.js demo (Story 4.1)
+
+### Recently Completed ✅
+- **Mock Services** - WebSocket and REST mocks with command playlists (Story 4.2)
 
 ### Planned ⏳
-- **Demo Application** - Interactive Next.js demo (Story 4.1)
-- **Mock Services** - WebSocket and REST mocks (Story 4.2)
 - **SDK Documentation** - API reference and integration guide (Story 4.3)
