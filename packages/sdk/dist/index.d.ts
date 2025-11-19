@@ -14,6 +14,6 @@ export type { NavigationRouter } from "./commands/navigate";
 export { handleRefreshElement, registerRefreshCallback, } from "./commands/refresh-element";
 export type { RefreshCallback } from "./commands/refresh-element";
 export { registerCommandHandlers } from "./commands/registry";
-export { attachAiButton, detachAiButton, detachAiButtonByElement, updateAiButton, detachAllAiButtons, getOverlayConfig, getOverlayConfigByElement, } from "./ai-overlay";
+export { attachAiButton, detachAiButton, detachAiButtonByElement, updateAiButton, detachAllAiButtons, getOverlayConfig, getOverlayConfigByElement, setChatbotBridge, getChatbotBridge, } from "./ai-overlay";
 export type { AttachAiButtonOptions, AttachResult, ElementMetadata, OverlayPlacement, OverlaySize, OverlayState, } from "./ai-overlay";
 //# sourceMappingURL=index.d.ts.map

@@ -1,7 +1,12 @@
 
 
 > @frontend-ui-command-sdk/demo@0.1.0 build
-> echo 'Demo app build not yet implemented'
+> vite build
 
-[1G[0KDemo app build not yet implemented
+[1G[0K[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+[36mvite v5.4.21 [32mbuilding for production...[36m[39m
+[2K[1Gtransforming (1) [2mindex.html[22m[2K[1Gtransforming (11) [2m../../node_modules/react/cjs/react.production.min.js[22m[2K[1Gtransforming (65) [2m../../packages/sdk/src/ai-overlay/promptClient.ts[22m[2K[1G[32m✓[39m 67 modules transformed.
+[2K[1Grendering chunks (1)...[2K[1G[2K[1Gcomputing gzip size (0)...[2K[1Gcomputing gzip size (1)...[2K[1Gcomputing gzip size (2)...[2K[1G[2mdist/[22m[32mindex.html                [39m[1m[2m  0.34 kB[22m[1m[22m[2m │ gzip:  0.25 kB[22m
+[2mdist/[22m[2massets/[22m[36mindex-BEfkkckT.js  [39m[1m[2m204.94 kB[22m[1m[22m[2m │ gzip: 58.27 kB[22m
+[32m✓ built in 529ms[39m
 [1G[0K⠙[1G[0K

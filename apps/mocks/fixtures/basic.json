@@ -1,0 +1,40 @@
+{
+    "name": "Basic Interaction Demo",
+    "description": "A simple sequence of commands to demonstrate UI interactions",
+    "intervalMs": 2000,
+    "commands": [
+        {
+            "command": "highlight",
+            "elementId": "highlight-target",
+            "requestId": "req-1"
+        },
+        {
+            "command": "hover",
+            "elementId": "hover-target",
+            "requestId": "req-2"
+        },
+        {
+            "command": "focus",
+            "elementId": "focus-target-button",
+            "requestId": "req-3"
+        },
+        {
+            "command": "fill",
+            "elementId": "focus-target-input",
+            "payload": {
+                "value": "Hello from WebSocket!"
+            },
+            "requestId": "req-4"
+        },
+        {
+            "command": "scroll",
+            "elementId": "scroll-target",
+            "requestId": "req-5"
+        },
+        {
+            "command": "highlight",
+            "elementId": "combined-target",
+            "requestId": "req-6"
+        }
+    ]
+}
