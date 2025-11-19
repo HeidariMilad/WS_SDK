@@ -9,7 +9,7 @@ import { CommandTimeline } from './components/CommandTimeline';
 export const App: React.FC = () => {
   return (
     <ConnectionProvider>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '48px' }}>
         {/* Skip navigation for accessibility */}
         <a
           href="#main-content"
@@ -34,23 +34,63 @@ export const App: React.FC = () => {
           Skip to main content
         </a>
 
-        {/* Status & Controls Bar */}
-        <header role="banner" aria-label="Application status and controls">
+        {/* Status & Controls Bar - Fixed at top */}
+        <header
+          role="banner"
+          aria-label="Application status and controls"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 100,
+            backgroundColor: 'white',
+          }}
+        >
           <ConnectionBanner />
-          <ConnectionEventsPanel />
         </header>
 
-        {/* Command Event Stream */}
-        <aside
-          role="complementary"
-          aria-label="Command event stream"
+        {/* Side-by-side panels with fixed height */}
+        <div
           style={{
+            display: 'flex',
+            gap: '1rem',
+            padding: '1rem',
+            height: '400px',
             borderTop: '1px solid #e5e7eb',
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <CommandTimeline />
-        </aside>
+          {/* Connection Events Panel - Left */}
+          <aside
+            role="complementary"
+            aria-label="Connection events"
+            style={{
+              flex: 1,
+              height: '100%',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <ConnectionEventsPanel />
+          </aside>
+
+          {/* Command Timeline Panel - Right */}
+          <aside
+            role="complementary"
+            aria-label="Command event stream"
+            style={{
+              flex: 1,
+              height: '100%',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <CommandTimeline />
+          </aside>
+        </div>
 
         {/* Main Interactive Canvas */}
         <main

@@ -5,6 +5,7 @@ import { globalLoggingBus } from '@frontend-ui-command-sdk/sdk';
 export const CommandTimeline: React.FC = () => {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Seed from existing history
@@ -12,10 +13,10 @@ export const CommandTimeline: React.FC = () => {
 
     const unsubscribe = globalLoggingBus.subscribe(entry => {
       setEntries(prev => {
-        const next = [...prev, entry];
+        const next = [entry, ...prev]; // Add to beginning (newest first)
         // Keep a rolling window of 100 entries
         if (next.length > 100) {
-          next.shift();
+          next.pop(); // Remove from end
         }
         return next;
       });
@@ -28,6 +29,13 @@ export const CommandTimeline: React.FC = () => {
     if (filter === 'all') return true;
     return entry.category === filter;
   });
+
+  // Auto-scroll to top when new entries arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [entries]);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -60,12 +68,16 @@ export const CommandTimeline: React.FC = () => {
   return (
     <section
       style={{
-        padding: '1rem',
-        borderTop: '1px solid #e5e7eb',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0.75rem 1rem',
+        border: '1px solid #e5e7eb',
+        borderRadius: '6px',
         backgroundColor: '#f9fafb',
       }}
     >
-      <div style={{ marginBottom: '0.75rem' }}>
+      <div style={{ marginBottom: '0.75rem', flexShrink: 0 }}>
         <div
           style={{
             display: 'flex',
@@ -74,7 +86,7 @@ export const CommandTimeline: React.FC = () => {
             marginBottom: '0.25rem',
           }}
         >
-          <h2 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Command Timeline</h2>
+          <h2 style={{ fontSize: '0.875rem', fontWeight: 600, margin: 0 }}>Command Timeline</h2>
           <select
             value={filter}
             onChange={e => setFilter(e.target.value)}
@@ -99,8 +111,9 @@ export const CommandTimeline: React.FC = () => {
       </div>
 
       <div
+        ref={scrollRef}
         style={{
-          maxHeight: '300px',
+          flex: 1,
           overflowY: 'auto',
           backgroundColor: 'white',
           border: '1px solid #e5e7eb',

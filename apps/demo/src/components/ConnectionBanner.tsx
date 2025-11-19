@@ -18,12 +18,14 @@ export const ConnectionBanner: React.FC = () => {
   return (
     <div
       style={{
-        padding: '0.5rem 1rem',
+        padding: '0.75rem 1rem',
         borderBottom: '1px solid #e5e7eb',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         fontSize: '0.875rem',
+        minHeight: '48px',
+        transition: 'background-color 0.3s ease, color 0.3s ease',
         backgroundColor:
           connectionState.status === 'connected'
             ? '#ecfdf3' // green-tinted background
@@ -43,22 +45,24 @@ export const ConnectionBanner: React.FC = () => {
         {isProblemState && lastError && <span style={{ opacity: 0.9 }}>({lastError.details})</span>}
       </div>
 
-      {isProblemState && (
-        <button
-          type="button"
-          onClick={retry}
-          style={{
-            padding: '0.25rem 0.75rem',
-            borderRadius: '9999px',
-            border: '1px solid currentColor',
-            background: 'transparent',
-            fontSize: '0.75rem',
-            cursor: 'pointer',
-          }}
-        >
-          Retry
-        </button>
-      )}
+      <div style={{ width: '70px', display: 'flex', justifyContent: 'flex-end' }}>
+        {isProblemState && (
+          <button
+            type="button"
+            onClick={retry}
+            style={{
+              padding: '0.25rem 0.75rem',
+              borderRadius: '9999px',
+              border: '1px solid currentColor',
+              background: 'transparent',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+            }}
+          >
+            Retry
+          </button>
+        )}
+      </div>
     </div>
   );
 };
