@@ -34,6 +34,15 @@ export const CommandBuilder: React.FC<CommandBuilderProps> = ({
   const [payloadJson, setPayloadJson] = useState<string>('{}');
   const [error, setError] = useState<string>('');
 
+  const getPreviewPayload = () => {
+    if (!payloadJson.trim()) return undefined;
+    try {
+      return JSON.parse(payloadJson);
+    } catch {
+      return '[Invalid JSON]';
+    }
+  };
+
   const handleExecute = () => {
     console.log('[CommandBuilder] Execute button clicked');
     console.log('[CommandBuilder] WS Connected:', wsConnected);
@@ -192,7 +201,7 @@ export const CommandBuilder: React.FC<CommandBuilderProps> = ({
             {JSON.stringify({
               command: selectedCommand,
               elementId: elementId || undefined,
-              payload: payloadJson.trim() ? JSON.parse(payloadJson || '{}') : undefined,
+              payload: getPreviewPayload(),
               requestId: 'manual-xxx',
             }, null, 2)}
           </pre>
