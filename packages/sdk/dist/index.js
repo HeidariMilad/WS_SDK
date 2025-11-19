@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChatbotBridge = exports.setChatbotBridge = exports.getOverlayConfigByElement = exports.getOverlayConfig = exports.detachAllAiButtons = exports.updateAiButton = exports.detachAiButtonByElement = exports.detachAiButton = exports.attachAiButton = exports.registerCommandHandlers = exports.registerRefreshCallback = exports.handleRefreshElement = exports.unregisterNavigationRouter = exports.registerNavigationRouter = exports.handleNavigate = exports.clearAllOverlays = exports.stopTargetingObserver = exports.startTargetingObserver = exports.unregisterOverlay = exports.registerOverlay = exports.getTargetingGuidance = exports.buildWarningMessage = exports.resolveTargetBySelector = exports.resolveTargetByDataElementId = exports.resolveTarget = exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
+exports.formatPromptError = exports.configurePromptWorkflow = exports.getChatbotBridge = exports.setChatbotBridge = exports.getOverlayConfigByElement = exports.getOverlayConfig = exports.detachAllAiButtons = exports.updateAiButton = exports.detachAiButtonByElement = exports.detachAiButton = exports.attachAiButton = exports.registerCommandHandlers = exports.registerRefreshCallback = exports.handleRefreshElement = exports.unregisterNavigationRouter = exports.registerNavigationRouter = exports.handleNavigate = exports.clearAllOverlays = exports.stopTargetingObserver = exports.startTargetingObserver = exports.unregisterOverlay = exports.registerOverlay = exports.getTargetingGuidance = exports.buildWarningMessage = exports.resolveTargetBySelector = exports.resolveTargetByDataElementId = exports.resolveTarget = exports.createWebSocketCommandClient = exports.CommandDispatcher = exports.WebSocketConnection = void 0;
 exports.placeholderSdk = placeholderSdk;
 function placeholderSdk() {
     return "frontend-ui-command-sdk placeholder";
@@ -62,4 +62,6 @@ Object.defineProperty(exports, "getOverlayConfig", { enumerable: true, get: func
 Object.defineProperty(exports, "getOverlayConfigByElement", { enumerable: true, get: function () { return ai_overlay_1.getOverlayConfigByElement; } });
 Object.defineProperty(exports, "setChatbotBridge", { enumerable: true, get: function () { return ai_overlay_1.setChatbotBridge; } });
 Object.defineProperty(exports, "getChatbotBridge", { enumerable: true, get: function () { return ai_overlay_1.getChatbotBridge; } });
+Object.defineProperty(exports, "configurePromptWorkflow", { enumerable: true, get: function () { return ai_overlay_1.configurePromptWorkflow; } });
+Object.defineProperty(exports, "formatPromptError", { enumerable: true, get: function () { return ai_overlay_1.formatPromptError; } });
 //# sourceMappingURL=index.js.map

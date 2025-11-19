@@ -38,6 +38,13 @@ export interface PromptClientConfig {
    * @default 10000
    */
   timeoutMs?: number;
+
+  /**
+   * If true, skip the HTTP request and generate a local mock prompt
+   * response instead. Useful for demos when the REST API is not running.
+   * @default false
+   */
+  useLocalMock?: boolean;
 }
 
 /**
@@ -67,6 +74,7 @@ const DEFAULT_CONFIG: Required<PromptClientConfig> = {
   enableRetry: true,
   retryDelayMs: 500,
   timeoutMs: 10000,
+  useLocalMock: false,
 };
 
 /**
@@ -98,6 +106,25 @@ export async function requestAiPrompt(
     message: `Requesting AI prompt for element: ${request.metadata.elementId || "unknown"}`,
     metadata: { requestId, elementId: request.metadata.elementId },
   });
+
+  // Optional shortcut: generate a local mock response without any HTTP call.
+  if (finalConfig.useLocalMock) {
+    const localResponse = buildLocalPromptResponse(request, requestId);
+
+    globalLoggingBus.log({
+      severity: "info",
+      category: "ai-prompt",
+      message: `AI prompt generated locally for element: ${request.metadata.elementId || "unknown"}`,
+      metadata: {
+        requestId,
+        elementId: request.metadata.elementId,
+        promptLength: localResponse.prompt.length,
+        source: "local-mock",
+      },
+    });
+
+    return localResponse;
+  }
 
   let lastError: Error | null = null;
   const maxAttempts = finalConfig.enableRetry ? 2 : 1;
@@ -180,6 +207,38 @@ export async function requestAiPrompt(
     requestId,
     lastError
   );
+}
+
+/**
+ * Build a local mock prompt response without calling the REST API.
+ *
+ * This keeps the demo functional in environments where the backend
+ * is not running while still exercising the full AI overlay workflow.
+ */
+function buildLocalPromptResponse(
+  request: AIPromptRequest,
+  requestId: string
+): PromptApiResponse {
+  const meta = request.metadata;
+  const label =
+    meta.computedLabel ||
+    meta.textContent ||
+    meta.elementId ||
+    meta.tagName ||
+    "unknown element";
+
+  const prompt = `Sample AI prompt for \"${label}\". Describe what you want to do with this UI element or how it should behave.`;
+
+  return {
+    prompt,
+    timestamp: Date.now(),
+    metadata: {
+      source: "local-mock",
+      elementId: meta.elementId,
+      tagName: meta.tagName,
+    },
+    requestId,
+  };
 }
 
 /**

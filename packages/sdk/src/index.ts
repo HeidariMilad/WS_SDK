@@ -46,6 +46,8 @@ export {
   getOverlayConfigByElement,
   setChatbotBridge,
   getChatbotBridge,
+  configurePromptWorkflow,
+  formatPromptError,
 } from "./ai-overlay";
 export type {
   AttachAiButtonOptions,

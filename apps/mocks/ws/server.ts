@@ -127,7 +127,7 @@ function startServer(): void {
   console.log(`   Usage: ws://localhost:${WS_PORT}?playlist=basic&interval=1000&loop=true\n`);
 
   wss.on("connection", (ws, request) => {
-    const url = request.url || "/?playlist=basic";
+    const url = request.url || "/";
     const params = parseQueryParams(url);
     const clientId = `client-${Date.now()}`;
 
@@ -144,15 +144,28 @@ function startServer(): void {
       })
     );
 
-    // Determine playlist configuration
-    const playlist = params.playlist || "basic";
-    const interval = params.interval ? parseInt(params.interval) : undefined;
-    const loop = params.loop === "true";
+    // Only auto-start playlist if explicitly requested via query param
+    if (params.playlist) {
+      const playlist = params.playlist;
+      const interval = params.interval ? parseInt(params.interval) : undefined;
+      const loop = params.loop === "true";
 
-    // Start sending playlist
-    try {
-      sendPlaylist(ws, { playlist, interval, loop }).catch((error) => {
-        console.error(`[${clientId}] Playlist error:`, error);
+      console.log(`[${clientId}] Auto-starting playlist: ${playlist}`);
+      
+      // Start sending playlist
+      try {
+        sendPlaylist(ws, { playlist, interval, loop }).catch((error) => {
+          console.error(`[${clientId}] Playlist error:`, error);
+          ws.send(
+            JSON.stringify({
+              type: "error",
+              message: error instanceof Error ? error.message : String(error),
+              timestamp: Date.now(),
+            })
+          );
+        });
+      } catch (error) {
+        console.error(`[${clientId}] Failed to start playlist:`, error);
         ws.send(
           JSON.stringify({
             type: "error",
@@ -160,35 +173,64 @@ function startServer(): void {
             timestamp: Date.now(),
           })
         );
-      });
-    } catch (error) {
-      console.error(`[${clientId}] Failed to start playlist:`, error);
-      ws.send(
-        JSON.stringify({
-          type: "error",
-          message: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now(),
-        })
-      );
+      }
+    } else {
+      console.log(`[${clientId}] Connected in manual mode (no auto-playlist)`);
     }
 
-    // Handle incoming messages (for future interactive features)
+    // Handle incoming messages (for interactive control)
     ws.on("message", (data) => {
       try {
         const message = JSON.parse(data.toString());
         console.log(`[${clientId}] Received message:`, message);
 
-        // Echo back for now (can be extended for interactive control)
+        // Handle control messages
+        if (message.type === 'command' && message.command) {
+          // Manual command execution
+          const enrichedCommand = {
+            ...message.command,
+            timestamp: Date.now(),
+          };
+
+          // Broadcast the command to ALL connected clients so that
+          // any demo app instances receive and execute the UI action.
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify(enrichedCommand));
+            }
+          });
+
+          console.log(`[${clientId}] Executed manual command: ${message.command.command}`);
+          
+          // Send an explicit ACK back to the originating client
+          ws.send(
+            JSON.stringify({
+              type: "ack",
+              message: "Command executed",
+              requestId: message.command.requestId,
+              timestamp: Date.now(),
+            })
+          );
+        } else {
+          // Echo back other messages
+          ws.send(
+            JSON.stringify({
+              type: "ack",
+              message: "Message received",
+              originalMessage: message,
+              timestamp: Date.now(),
+            })
+          );
+        }
+      } catch (error) {
+        console.error(`[${clientId}] Invalid message format:`, error);
         ws.send(
           JSON.stringify({
-            type: "ack",
-            message: "Message received",
-            originalMessage: message,
+            type: "error",
+            message: "Invalid message format",
             timestamp: Date.now(),
           })
         );
-      } catch (error) {
-        console.error(`[${clientId}] Invalid message format:`, error);
       }
     });
 

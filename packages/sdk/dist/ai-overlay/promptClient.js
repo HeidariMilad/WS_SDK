@@ -27,6 +27,7 @@ const DEFAULT_CONFIG = {
     enableRetry: true,
     retryDelayMs: 500,
     timeoutMs: 10000,
+    useLocalMock: false,
 };
 /**
  * Request an AI prompt from the mock generation endpoint.
@@ -53,6 +54,22 @@ async function requestAiPrompt(request, config = {}) {
         message: `Requesting AI prompt for element: ${request.metadata.elementId || "unknown"}`,
         metadata: { requestId, elementId: request.metadata.elementId },
     });
+    // Optional shortcut: generate a local mock response without any HTTP call.
+    if (finalConfig.useLocalMock) {
+        const localResponse = buildLocalPromptResponse(request, requestId);
+        loggingBus_1.globalLoggingBus.log({
+            severity: "info",
+            category: "ai-prompt",
+            message: `AI prompt generated locally for element: ${request.metadata.elementId || "unknown"}`,
+            metadata: {
+                requestId,
+                elementId: request.metadata.elementId,
+                promptLength: localResponse.prompt.length,
+                source: "local-mock",
+            },
+        });
+        return localResponse;
+    }
     let lastError = null;
     const maxAttempts = finalConfig.enableRetry ? 2 : 1;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -112,6 +129,31 @@ async function requestAiPrompt(request, config = {}) {
     }
     // All attempts failed
     throw new PromptApiError(`Failed to request AI prompt after ${maxAttempts} attempt(s): ${lastError?.message}`, lastError instanceof PromptApiError ? lastError.statusCode : undefined, requestId, lastError);
+}
+/**
+ * Build a local mock prompt response without calling the REST API.
+ *
+ * This keeps the demo functional in environments where the backend
+ * is not running while still exercising the full AI overlay workflow.
+ */
+function buildLocalPromptResponse(request, requestId) {
+    const meta = request.metadata;
+    const label = meta.computedLabel ||
+        meta.textContent ||
+        meta.elementId ||
+        meta.tagName ||
+        "unknown element";
+    const prompt = `Sample AI prompt for \"${label}\". Describe what you want to do with this UI element or how it should behave.`;
+    return {
+        prompt,
+        timestamp: Date.now(),
+        metadata: {
+            source: "local-mock",
+            elementId: meta.elementId,
+            tagName: meta.tagName,
+        },
+        requestId,
+    };
 }
 /**
  * Fetch with timeout support.

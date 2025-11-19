@@ -29,6 +29,12 @@ export interface PromptClientConfig {
      * @default 10000
      */
     timeoutMs?: number;
+    /**
+     * If true, skip the HTTP request and generate a local mock prompt
+     * response instead. Useful for demos when the REST API is not running.
+     * @default false
+     */
+    useLocalMock?: boolean;
 }
 /**
  * Error thrown when the prompt API request fails.

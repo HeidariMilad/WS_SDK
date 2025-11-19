@@ -6,6 +6,7 @@ import {
   createWebSocketCommandClient,
   registerCommandHandlers,
   setChatbotBridge,
+  configurePromptWorkflow,
 } from '@frontend-ui-command-sdk/sdk';
 import { getDemoWebSocketUrl } from '../config/connection';
 
@@ -29,6 +30,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const connectionRef = useRef<ReturnType<typeof createWebSocketCommandClient> | null>(null);
 
   useEffect(() => {
+    // Configure AI prompt workflow to use a local mock instead of REST.
+    configurePromptWorkflow({ useLocalMock: true });
+
     // Set up chatbot bridge from window global (poll until available)
     const checkBridge = () => {
       const bridge = (
