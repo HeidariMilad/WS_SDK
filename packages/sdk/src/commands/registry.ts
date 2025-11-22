@@ -11,12 +11,13 @@ import { handleFill } from "./fill";
 import { handleClear } from "./clear";
 import { handleSelect } from "./select";
 import { handleOpen, handleClose } from "./open-close";
+import { handleAttachAiButton, handleDetachAiButton } from "./ai-button";
 import { globalLoggingBus } from "../logging/loggingBus";
 
 /**
  * Register all command handlers with the dispatcher.
  *
- * Registers: navigate, refresh_element, highlight, hover, focus, scroll, click, fill, clear, select, open, close
+ * Registers: navigate, refresh_element, highlight, hover, focus, scroll, click, fill, clear, select, open, close, attach_ai_button, detach_ai_button
  *
  * @param dispatcher - Command dispatcher instance
  * @param router - Optional navigation router (required for navigate command)
@@ -355,6 +356,62 @@ export function registerCommandHandlers(
       });
   });
   unregisterFns.push(unregisterClose);
+
+  // Register attach_ai_button command
+  const unregisterAttachAi = dispatcher.register("attach_ai_button", (payload) => {
+    handleAttachAiButton(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "attach_ai_button handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterAttachAi);
+
+  // Register detach_ai_button command
+  const unregisterDetachAi = dispatcher.register("detach_ai_button", (payload) => {
+    handleDetachAiButton(payload)
+      .then((result) => {
+        if (result.status === "error" || result.status === "warning") {
+          globalLoggingBus.log({
+            severity: result.status === "error" ? "error" : "warning",
+            category: "command",
+            message: result.details,
+            result,
+            metadata: { payload },
+          });
+        }
+      })
+      .catch((error) => {
+        globalLoggingBus.log({
+          severity: "error",
+          category: "command",
+          message: "detach_ai_button handler threw unexpected error",
+          metadata: {
+            payload,
+            error: error instanceof Error ? error.message : String(error),
+          },
+        });
+      });
+  });
+  unregisterFns.push(unregisterDetachAi);
 
   // Return cleanup function
   return () => {

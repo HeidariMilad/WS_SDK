@@ -36,79 +36,6 @@ export const InteractiveCanvas: React.FC = () => {
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
       <div
         style={{
-          marginBottom: '2rem',
-          padding: '1.5rem',
-          backgroundColor: '#eff6ff',
-          borderRadius: '0.5rem',
-          border: '1px solid #bfdbfe',
-        }}
-      >
-        <h2
-          style={{
-            marginBottom: '0.75rem',
-            fontSize: '1.5rem',
-            fontWeight: '600',
-            color: '#1e40af',
-          }}
-        >
-          Interactive Canvas
-        </h2>
-        <p
-          style={{ fontSize: '1rem', color: '#1e40af', marginBottom: '0.75rem', lineHeight: '1.6' }}
-        >
-          👋 <strong>Welcome to the Frontend UI Command SDK Demo!</strong> This page demonstrates
-          how external commands can control and interact with UI elements remotely.
-        </p>
-        <p
-          style={{
-            fontSize: '0.875rem',
-            color: '#1e40af',
-            marginBottom: '0.5rem',
-            lineHeight: '1.6',
-          }}
-        >
-          <strong>How it works:</strong> Each element below is labeled with an{' '}
-          <code
-            style={{
-              backgroundColor: '#dbeafe',
-              padding: '0.125rem 0.25rem',
-              borderRadius: '0.25rem',
-            }}
-          >
-            elementId
-          </code>
-          . Commands sent via WebSocket or manual controls can target these elements to trigger
-          actions like click, focus, fill, highlight, and more.
-        </p>
-        <p style={{ fontSize: '0.875rem', color: '#1e40af', lineHeight: '1.6' }}>
-          <strong>Watch the timeline:</strong> As commands execute, the Command Timeline below logs
-          each action with status, timestamp, and details.
-        </p>
-        <div style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
-          <strong style={{ color: '#1e40af', marginRight: '0.5rem' }}>📚 Documentation:</strong>
-          <a
-            href="docs/prd.md"
-            style={{ color: '#2563eb', textDecoration: 'underline', marginRight: '1rem' }}
-          >
-            PRD
-          </a>
-          <a
-            href="docs/architecture.md"
-            style={{ color: '#2563eb', textDecoration: 'underline', marginRight: '1rem' }}
-          >
-            Architecture
-          </a>
-          <a
-            href="docs/front-end-spec.md"
-            style={{ color: '#2563eb', textDecoration: 'underline' }}
-          >
-            UX Spec
-          </a>
-        </div>
-      </div>
-
-      <div
-        style={{
           display: 'grid',
           gap: '1.5rem',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -473,7 +400,7 @@ export const InteractiveCanvas: React.FC = () => {
             zIndex: 1000,
             padding: '1rem',
           }}
-          onClick={e => {
+          onClick={(e) => {
             // Close on backdrop click
             if (e.target === e.currentTarget) {
               setIsModalOpen(false);
@@ -489,7 +416,7 @@ export const InteractiveCanvas: React.FC = () => {
               width: '100%',
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
             }}
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <h2
               id="demo-modal-title"

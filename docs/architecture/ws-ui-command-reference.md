@@ -59,7 +59,7 @@ Error frames follow the pattern from `apps/mock-manager/ARCHITECTURE.md`:
 
 ## 2. Command List
 
-The SDK defines 12 UI command names (see `docs/architecture/shared-types-and-api.md`):
+The SDK defines 14 UI command names (see `docs/architecture/shared-types-and-api.md`):
 
 - `navigate`
 - `refresh_element`
@@ -73,6 +73,8 @@ The SDK defines 12 UI command names (see `docs/architecture/shared-types-and-api
 - `scroll`
 - `select`
 - `hover`
+- `attach_ai_button`
+- `detach_ai_button`
 
 The shared `CommandPayload` contract (simplified from `packages/shared/src/index.ts` and `docs/architecture/shared-types-and-api.md`) is:
 
@@ -532,6 +534,114 @@ Global close:
   "requestId": "close-global-001"
 }
 ```
+
+---
+
+### 3.13 `attach_ai_button`
+
+**Purpose:** Attach an AI assistant button to an element for contextual help.
+
+**Handler:** `packages/sdk/src/commands/ai-button.ts` (`handleAttachAiButton`).
+
+**Payload (inside `payload.options`):**
+
+- `placement?`: `"top-left" | "top-right" | "bottom-left" | "bottom-right" | "center"` or custom coordinates object (default: `"top-right"`)
+- `label?`: string - tooltip text for the button
+- `icon?`: string - custom icon (SVG or emoji)
+- `size?`: `"default" | "compact"` (default: `"default"`)
+- `className?`: string - custom CSS class
+- `style?`: object - inline styles
+- `disabled?`: boolean (default: `false`)
+- `zIndex?`: number (default: `10000`)
+- `ariaLabel?`: string (default: `"AI Assistant"`)
+
+**Example:**
+
+```json
+{
+  "command": "attach_ai_button",
+  "elementId": "highlight-target",
+  "payload": {
+    "options": {
+      "placement": "top-right",
+      "label": "Ask AI",
+      "size": "default"
+    }
+  },
+  "requestId": "attach-ai-001"
+}
+```
+
+**Full WebSocket frame:**
+
+```json
+{
+  "type": "command",
+  "command": {
+    "command": "attach_ai_button",
+    "elementId": "highlight-target",
+    "payload": {
+      "options": {
+        "placement": "top-right",
+        "label": "Ask AI"
+      }
+    },
+    "requestId": "attach-ai-001"
+  }
+}
+```
+
+**Behaviour:**
+
+- Attaches an AI button overlay to the specified element
+- Button automatically reattaches if element is removed and re-added
+- Clicking the button triggers AI prompt workflow (collects metadata, calls `/mock/ai_generate_ui_prompt`, opens chatbot)
+- Returns error if AI button already attached to element
+
+---
+
+### 3.14 `detach_ai_button`
+
+**Purpose:** Remove an AI assistant button from an element.
+
+**Handler:** `packages/sdk/src/commands/ai-button.ts` (`handleDetachAiButton`).
+
+**Payload (inside `payload.options`):**
+
+- `overlayId?`: string - specific overlay ID to detach (if not provided, uses `elementId`)
+
+**Example (by elementId):**
+
+```json
+{
+  "command": "detach_ai_button",
+  "elementId": "highlight-target",
+  "payload": {
+    "options": {}
+  },
+  "requestId": "detach-ai-001"
+}
+```
+
+**Example (by overlayId):**
+
+```json
+{
+  "command": "detach_ai_button",
+  "payload": {
+    "options": {
+      "overlayId": "overlay-abc123"
+    }
+  },
+  "requestId": "detach-ai-002"
+}
+```
+
+**Behaviour:**
+
+- Removes the AI button from the specified element
+- Unregisters from lifecycle system (will NOT reattach if element is re-added)
+- Returns warning if AI button not found
 
 ---
 

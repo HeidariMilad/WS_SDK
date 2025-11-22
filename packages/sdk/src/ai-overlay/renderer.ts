@@ -165,18 +165,22 @@ function positionButton(
   options: AttachAiButtonOptions
 ): void {
   const placement = options.placement || "top-right";
-  const size = options.size || "default";
-  const buttonSize =
-    size === "compact"
-      ? { width: 32, height: 32 }
-      : options.label
-      ? { width: 120, height: 44 } // Estimate for labeled button
-      : { width: 44, height: 44 };
+  
+  // Get button size from options or use defaults
+  const width = options.width || (options.size === "compact" ? 32 : 44);
+  const height = options.height || (options.size === "compact" ? 32 : 44);
+  const buttonSize = { width, height };
+
+  // Get offsets from options
+  const offsetX = options.offsetX || 0;
+  const offsetY = options.offsetY || 0;
 
   const position = calculateOverlayPosition(
     targetElement,
     placement,
-    buttonSize
+    buttonSize,
+    offsetX,
+    offsetY
   );
 
   button.style.top = `${position.top}px`;

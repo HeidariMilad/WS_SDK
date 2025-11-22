@@ -7,6 +7,8 @@ import {
   registerCommandHandlers,
   setChatbotBridge,
   configurePromptWorkflow,
+  startTargetingObserver,
+  stopTargetingObserver,
 } from '@frontend-ui-command-sdk/sdk';
 import { getDemoWebSocketUrl } from '../config/connection';
 
@@ -32,6 +34,11 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => {
     // Configure AI prompt workflow to use a local mock instead of REST.
     configurePromptWorkflow({ useLocalMock: true });
+
+    // Start the targeting observer for automatic AI button reattachment
+    // This enables dynamic element support - when elements are removed and re-added,
+    // their AI buttons will automatically reattach
+    startTargetingObserver();
 
     // Set up chatbot bridge from window global (poll until available)
     const checkBridge = () => {
@@ -104,6 +111,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       unsubscribeStatus();
       unsubscribeErrors();
       unregisterHandlers();
+      stopTargetingObserver(); // Clean up the targeting observer
       connection.disconnect({ reason: 'ConnectionProvider unmounted' });
     };
   }, []);

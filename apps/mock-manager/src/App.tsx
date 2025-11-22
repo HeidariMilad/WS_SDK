@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CommandBuilder } from './components/CommandBuilder';
 import { CommandHistory } from './components/CommandHistory';
 import { WebSocketMonitor } from './components/WebSocketMonitor';
+import { AIButtonManager } from './components/AIButtonManager';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useCommandExecutor } from './hooks/useCommandExecutor';
 
@@ -77,6 +78,11 @@ export const App: React.FC = () => {
           {/* Left Column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <CommandBuilder
+              wsConnected={wsConnected}
+              executeCommand={executeCommand}
+              isExecuting={isExecuting}
+            />
+            <AIButtonManager
               wsConnected={wsConnected}
               executeCommand={executeCommand}
               isExecuting={isExecuting}

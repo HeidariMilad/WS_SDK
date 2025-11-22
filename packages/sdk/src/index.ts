@@ -33,6 +33,11 @@ export {
   registerRefreshCallback,
 } from "./commands/refresh-element";
 export type { RefreshCallback } from "./commands/refresh-element";
+export {
+  handleAttachAiButton,
+  handleDetachAiButton,
+} from "./commands/ai-button";
+export type { AttachAiButtonPayload } from "./commands/ai-button";
 export { registerCommandHandlers } from "./commands/registry";
 
 // AI Overlay module

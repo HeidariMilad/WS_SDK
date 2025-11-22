@@ -55,15 +55,21 @@ export function collectElementMetadata(element: HTMLElement): ElementMetadata {
 /**
  * Calculate absolute position for an overlay button relative to a target element.
  *
+ * Positions button INSIDE the element boundaries with fixed margins.
+ *
  * @param targetElement - The element to position relative to.
  * @param placement - The placement configuration.
- * @param buttonSize - The size of the overlay button (for collision detection).
+ * @param buttonSize - The size of the overlay button.
+ * @param offsetX - X-axis offset in pixels (default: 0).
+ * @param offsetY - Y-axis offset in pixels (default: 0).
  * @returns Object with top and left pixel values.
  */
 export function calculateOverlayPosition(
   targetElement: HTMLElement,
   placement: OverlayPlacement = "top-right",
-  buttonSize = { width: 44, height: 44 }
+  buttonSize = { width: 44, height: 44 },
+  offsetX = 0,
+  offsetY = 0
 ): { top: number; left: number } {
   const rect = targetElement.getBoundingClientRect();
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -73,34 +79,42 @@ export function calculateOverlayPosition(
   const baseTop = rect.top + scrollTop;
   const baseLeft = rect.left + scrollLeft;
 
+  // Fixed margin from edges (stable positioning)
+  const margin = 8;
+
   let top = baseTop;
   let left = baseLeft;
 
   if (typeof placement === "string") {
     switch (placement) {
       case "top-left":
-        top = baseTop - buttonSize.height - 4; // 4px gap
-        left = baseLeft;
+        // Inside top-left corner with margin
+        top = baseTop + margin;
+        left = baseLeft + margin;
         break;
       case "top-right":
-        top = baseTop - buttonSize.height - 4;
-        left = baseLeft + rect.width - buttonSize.width;
+        // Inside top-right corner with fixed margin from right edge
+        top = baseTop + margin;
+        left = baseLeft + rect.width - buttonSize.width - margin;
         break;
       case "bottom-left":
-        top = baseTop + rect.height + 4;
-        left = baseLeft;
+        // Inside bottom-left corner with margin
+        top = baseTop + rect.height - buttonSize.height - margin;
+        left = baseLeft + margin;
         break;
       case "bottom-right":
-        top = baseTop + rect.height + 4;
-        left = baseLeft + rect.width - buttonSize.width;
+        // Inside bottom-right corner with fixed margin from right and bottom edges
+        top = baseTop + rect.height - buttonSize.height - margin;
+        left = baseLeft + rect.width - buttonSize.width - margin;
         break;
       case "center":
+        // Centered inside element
         top = baseTop + rect.height / 2 - buttonSize.height / 2;
         left = baseLeft + rect.width / 2 - buttonSize.width / 2;
         break;
     }
   } else {
-    // Custom placement object
+    // Custom placement object with inside positioning
     if (placement.top !== undefined) {
       top = baseTop + placement.top;
     }
@@ -108,36 +122,27 @@ export function calculateOverlayPosition(
       left = baseLeft + placement.left;
     }
     if (placement.right !== undefined) {
+      // Position from right edge (inside element)
       left = baseLeft + rect.width - placement.right - buttonSize.width;
     }
     if (placement.bottom !== undefined) {
+      // Position from bottom edge (inside element)
       top = baseTop + rect.height - placement.bottom - buttonSize.height;
     }
   }
 
-  // Basic collision detection: ensure overlay stays within viewport
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
+  // Apply user-defined offsets
+  top += offsetY;
+  left += offsetX;
 
-  // Adjust if overlay would be clipped on the right
-  if (left + buttonSize.width > scrollLeft + viewportWidth) {
-    left = scrollLeft + viewportWidth - buttonSize.width - 8; // 8px margin
-  }
+  // Ensure button stays within element bounds
+  const minTop = baseTop;
+  const maxTop = baseTop + rect.height - buttonSize.height;
+  const minLeft = baseLeft;
+  const maxLeft = baseLeft + rect.width - buttonSize.width;
 
-  // Adjust if overlay would be clipped on the left
-  if (left < scrollLeft) {
-    left = scrollLeft + 8;
-  }
-
-  // Adjust if overlay would be clipped on the bottom
-  if (top + buttonSize.height > scrollTop + viewportHeight) {
-    top = scrollTop + viewportHeight - buttonSize.height - 8;
-  }
-
-  // Adjust if overlay would be clipped on the top
-  if (top < scrollTop) {
-    top = scrollTop + 8;
-  }
+  top = Math.max(minTop, Math.min(maxTop, top));
+  left = Math.max(minLeft, Math.min(maxLeft, left));
 
   return { top, left };
 }
