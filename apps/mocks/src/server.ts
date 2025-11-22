@@ -67,9 +67,10 @@ app.post("/mock/ai_generate_ui_prompt", (req: Request, res: Response) => {
 
     // Generate a mock prompt based on element metadata
     const { metadata } = body;
-    const elementId = metadata.elementId || "unknown-element";
+    const elementId =
+      body.elementId || metadata.elementId || "unknown-element";
     const tagName = metadata.tagName.toLowerCase();
-    const value = metadata.value || "";
+    const value = body.value ?? metadata.value ?? "";
     const textContent = metadata.textContent || "";
     const computedLabel = metadata.computedLabel || "";
 
@@ -139,13 +140,15 @@ app.post("/mock/ai_generate_ui_prompt", (req: Request, res: Response) => {
       elementId,
       tagName,
       label: computedLabel,
+      value,
       position: metadata.boundingBox,
     };
 
     const response: AIPromptResponse = {
       prompt,
       timestamp: Date.now(),
-      metadata: extraInfo,
+      extraInfo,
+      metadata: extraInfo, // retain legacy metadata for backward compatibility
     };
 
     console.log(`[AI Prompt] Generated for element ${elementId}: "${prompt.slice(0, 60)}..."`);

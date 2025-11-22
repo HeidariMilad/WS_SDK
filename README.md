@@ -129,6 +129,58 @@ When integrating with real AI providers (OpenAI, Anthropic, etc.), you can:
 
 The SDK's `AIPromptRequest` and `AIPromptResponse` types ensure compatibility across providers.
 
+#### AI Prompt API Contract
+
+AI button clicks POST to `/mock/ai_generate_ui_prompt` with the following payload:
+
+```jsonc
+{
+  "elementId": "email-input",
+  "value": "user@example.com",
+  "metadata": {
+    "tagName": "input",
+    "textContent": "",
+    "value": "user@example.com",
+    "dataAttributes": {
+      "data-elementid": "email-input",
+      "data-testid": "email-field"
+    },
+    "computedLabel": "Email Address",
+    "boundingBox": {
+      "top": 150,
+      "left": 200,
+      "width": 300,
+      "height": 40
+    }
+  },
+  "timestamp": 1704067200000,
+  "context": {
+    "userAgent": "Mozilla/5.0 ...",
+    "viewport": { "width": 1920, "height": 1080 }
+  }
+}
+```
+
+The mock server responds with:
+
+```jsonc
+{
+  "prompt": "Sample prompt for element email-input",
+  "extraInfo": {
+    "suggestions": ["Explain what this element does", "Suggest improvements"],
+    "elementContext": {
+      "elementId": "email-input",
+      "tagName": "input",
+      "value": "user@example.com",
+      "position": { "top": 150, "left": 200, "width": 300, "height": 40 }
+    }
+  },
+  "timestamp": 1704067200050
+}
+```
+
+`extraInfo` can contain any provider-specific metadata (recommendations, confidence scores, etc.) and is forwarded to the chatbot drawer.
+
 ### Build all packages
 
 ```bash

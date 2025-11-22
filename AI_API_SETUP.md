@@ -65,6 +65,8 @@ When you click an AI button, a POST request is sent with this structure:
 
 ```typescript
 {
+  elementId?: string;
+  value?: string;
   metadata: {
     elementId?: string;           // e.g., "submit-btn"
     tagName: string;              // e.g., "button", "input"
@@ -98,7 +100,24 @@ The server responds with:
 {
   prompt: string;                 // Generated prompt text
   timestamp: number;              // Response timestamp
-  metadata?: Record<string, unknown>;  // Additional metadata
+  extraInfo?: Record<string, unknown>;  // Additional metadata / suggestions
+}
+```
+
+Example:
+
+```jsonc
+{
+  "prompt": "Sample prompt for element X",
+  "extraInfo": {
+    "infoKey": "infoValue",
+    "elementContext": {
+      "elementId": "element-x",
+      "tagName": "textarea",
+      "value": "Current user-entered text"
+    }
+  },
+  "timestamp": 1704067200050
 }
 ```
 

@@ -92,8 +92,25 @@ export interface AIElementMetadata {
  * Payload sent to AI prompt generation endpoint.
  */
 export interface AIPromptRequest {
+  /**
+   * Element identifier for quick reference on the backend.
+   */
+  elementId?: string;
+  /**
+   * Raw value of the element at the time of the request.
+   */
+  value?: string;
+  /**
+   * Full element metadata (redundant but more expressive for AI providers).
+   */
   metadata: AIElementMetadata;
+  /**
+   * Timestamp when the request originated (epoch millis).
+   */
   timestamp: number;
+  /**
+   * Optional contextual data (viewport info, UA, etc.).
+   */
   context?: Record<string, unknown>;
 }
 
@@ -103,6 +120,13 @@ export interface AIPromptRequest {
 export interface AIPromptResponse {
   prompt: string;
   timestamp: number;
+  /**
+   * Structured supplemental data to display alongside the prompt.
+   */
+  extraInfo?: Record<string, unknown>;
+  /**
+   * Legacy metadata field retained for backward compatibility.
+   */
   metadata?: Record<string, unknown>;
 }
 

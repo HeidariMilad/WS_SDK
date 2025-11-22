@@ -97,6 +97,7 @@ describe("Chatbot Bridge Integration", () => {
     const mockPromptResponse = {
       prompt: "How can I help you with this button?",
       timestamp: Date.now(),
+      extraInfo: { suggestions: ["Click", "Hover"] },
       metadata: { suggestions: ["Click", "Hover"] },
     };
 
@@ -152,7 +153,7 @@ describe("Chatbot Bridge Integration", () => {
       await handleAIButtonClick(mockMetadata);
 
       assert.ok(receivedData.extraInfo, "Should include extraInfo");
-      assert.deepEqual(receivedData.extraInfo, mockPromptResponse.metadata);
+      assert.deepEqual(receivedData.extraInfo, mockPromptResponse.extraInfo);
       assert.ok(receivedData.metadata, "Should include element metadata");
       assert.equal(receivedData.metadata.elementId, mockMetadata.elementId);
     });

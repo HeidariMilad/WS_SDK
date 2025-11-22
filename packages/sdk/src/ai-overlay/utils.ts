@@ -12,6 +12,49 @@ import type { ElementMetadata, OverlayPlacement } from "./types";
  * @param element - The target HTMLElement.
  * @returns ElementMetadata object with all relevant information.
  */
+function normalizeValue(value?: string | null): string | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function getElementValue(element: HTMLElement): string | undefined {
+  if (element instanceof HTMLInputElement) {
+    if (element.type === "checkbox" || element.type === "radio") {
+      if (!element.checked) {
+        return undefined;
+      }
+      return normalizeValue(element.value || "on");
+    }
+    return normalizeValue(element.value);
+  }
+
+  if (element instanceof HTMLTextAreaElement) {
+    return normalizeValue(element.value);
+  }
+
+  if (element instanceof HTMLSelectElement) {
+    const selectedOptions = Array.from(element.selectedOptions);
+    if (selectedOptions.length === 0) {
+      return undefined;
+    }
+    if (element.multiple) {
+      return selectedOptions.map((option) => option.value || option.text).join(", ");
+    }
+    const option = selectedOptions[0];
+    return normalizeValue(option.value || option.text);
+  }
+
+  if (element.isContentEditable) {
+    return normalizeValue(element.textContent);
+  }
+
+  const valueAttr = element.getAttribute("value");
+  return normalizeValue(valueAttr);
+}
+
 export function collectElementMetadata(element: HTMLElement): ElementMetadata {
   const rect = element.getBoundingClientRect();
   const dataAttributes: Record<string, string> = {};
@@ -32,15 +75,13 @@ export function collectElementMetadata(element: HTMLElement): ElementMetadata {
     element.textContent?.trim() ||
     undefined;
 
+  const value = getElementValue(element);
+
   return {
     elementId: element.getAttribute("data-elementid") || undefined,
     tagName: element.tagName.toLowerCase(),
     textContent: element.textContent?.trim() || undefined,
-    value:
-      element instanceof HTMLInputElement ||
-      element instanceof HTMLTextAreaElement
-        ? element.value
-        : undefined,
+    value,
     dataAttributes,
     computedLabel,
     boundingBox: {

@@ -86,18 +86,21 @@ export function renderOverlay(
   // Remove existing button if present
   removeOverlay(overlayId);
 
-  // Collect metadata from the target element
-  const metadata = collectElementMetadata(targetElement);
+  // Collect initial metadata from the target element (used for initial render)
+  const initialMetadata = collectElementMetadata(targetElement);
 
-  // Create integrated click handler that runs prompt workflow first
-  const integratedClickHandler = async (metadata: ElementMetadata) => {
+  // Create integrated click handler that re-collects metadata before invoking workflow
+  const integratedClickHandler = async (_metadata: ElementMetadata) => {
+    // Re-collect metadata at click time to capture latest value/text state
+    const currentMetadata = collectElementMetadata(targetElement);
+
     try {
       // Execute the prompt workflow (API call + chatbot integration)
-      await handleAIButtonClick(metadata);
+      await handleAIButtonClick(currentMetadata);
       
       // Call the user's custom onClick handler if provided
       if (onButtonClick) {
-        await onButtonClick(metadata);
+        await onButtonClick(currentMetadata);
       }
     } catch (error) {
       // Log user-friendly error message
@@ -107,7 +110,7 @@ export function renderOverlay(
         category: "ui",
         message: userMessage,
         metadata: {
-          elementId: metadata.elementId,
+          elementId: currentMetadata.elementId,
           error: error instanceof Error ? error.message : String(error),
         },
       });
@@ -118,7 +121,11 @@ export function renderOverlay(
   };
 
   // Create the button with integrated handler
-  const button = createAIOverlayButton(options, metadata, integratedClickHandler);
+  const button = createAIOverlayButton(
+    options,
+    initialMetadata,
+    integratedClickHandler
+  );
 
   // Enable pointer events on the button
   button.style.pointerEvents = "auto";
