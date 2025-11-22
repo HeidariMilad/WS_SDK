@@ -52,6 +52,8 @@ The mock services provide WebSocket and REST endpoints for testing the SDK:
 
 #### Start REST API Mock (AI Prompt Endpoint)
 
+**In a separate terminal**, run:
+
 ```bash
 cd apps/mocks
 npm run dev          # Development mode with hot reload
@@ -61,6 +63,8 @@ npm start            # Production mode
 - **REST API**: `http://localhost:3000`
 - **Endpoint**: `POST /mock/ai_generate_ui_prompt`
 - **Health Check**: `GET /health`
+
+**Note**: The demo app now uses the REST API by default. Make sure the mock server is running before clicking AI buttons, or set `DEMO_USE_LOCAL_MOCK=true` to use local mock responses instead.
 
 #### Start WebSocket Mock Server (Command Playlists)
 
@@ -90,11 +94,40 @@ npm run start:all    # Start both in production mode
 
 #### Configuration
 
+**Mock Server Configuration:**
 - **REST Port**: Set `PORT` environment variable (default: 3000)
 - **WebSocket Port**: Set `WS_PORT` environment variable (default: 8080)
 - **Playlist**: Query parameter `?playlist=basic|full|stress`
 - **Interval**: Query parameter `?interval=1000` (milliseconds between commands)
 - **Loop**: Query parameter `?loop=true` (repeat playlist)
+
+**Demo App Configuration (AI API):**
+
+The demo app can be configured via environment variables to use different AI providers:
+
+```bash
+# Use local mock server (default)
+# No configuration needed - ensure mock server is running on localhost:3000
+
+# Use local mock responses (bypass HTTP)
+DEMO_USE_LOCAL_MOCK=true npm run dev
+
+# Point to a different API endpoint
+DEMO_AI_API_URL=https://api.example.com npm run dev
+
+# For Vite (use NEXT_PUBLIC_ prefix)
+NEXT_PUBLIC_DEMO_AI_API_URL=https://api.example.com npm run dev
+```
+
+**Future: Real AI Provider Integration**
+
+When integrating with real AI providers (OpenAI, Anthropic, etc.), you can:
+
+1. Set `DEMO_AI_API_URL` to your provider's endpoint
+2. Update the mock server (`apps/mocks/src/server.ts`) to proxy to your provider, or
+3. Create a custom backend that implements the same `/mock/ai_generate_ui_prompt` endpoint contract
+
+The SDK's `AIPromptRequest` and `AIPromptResponse` types ensure compatibility across providers.
 
 ### Build all packages
 

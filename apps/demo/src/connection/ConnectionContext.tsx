@@ -11,6 +11,7 @@ import {
   stopTargetingObserver,
 } from '@frontend-ui-command-sdk/sdk';
 import { getDemoWebSocketUrl } from '../config/connection';
+import { getDemoApiBaseUrl, shouldUseLocalMock } from '../config/api';
 
 interface ConnectionContextValue {
   connectionState: ConnectionState;
@@ -32,8 +33,13 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const connectionRef = useRef<ReturnType<typeof createWebSocketCommandClient> | null>(null);
 
   useEffect(() => {
-    // Configure AI prompt workflow to use a local mock instead of REST.
-    configurePromptWorkflow({ useLocalMock: true });
+    // Configure AI prompt workflow with API endpoint from environment or defaults.
+    // Set DEMO_USE_LOCAL_MOCK=true to use local mock instead of HTTP requests.
+    // Set DEMO_AI_API_URL to point to your real AI provider API.
+    configurePromptWorkflow({
+      baseUrl: getDemoApiBaseUrl(),
+      useLocalMock: shouldUseLocalMock(),
+    });
 
     // Start the targeting observer for automatic AI button reattachment
     // This enables dynamic element support - when elements are removed and re-added,
