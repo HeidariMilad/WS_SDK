@@ -19,8 +19,8 @@ const DEFAULT_COMMANDS: CommandSchema[] = [
   { command: 'select', description: 'Select an option from dropdown', requiresElementId: true },
   { command: 'navigate', description: 'Navigate to a URL', requiresElementId: false },
   { command: 'refresh_element', description: 'Refresh element state', requiresElementId: true },
-  { command: 'open', description: 'Open a modal or dialog', requiresElementId: true },
-  { command: 'close', description: 'Close a modal or dialog', requiresElementId: true },
+  { command: 'open', description: 'Open a modal or dialog', requiresElementId: false },
+  { command: 'close', description: 'Close a modal or dialog', requiresElementId: false },
 ];
 
 export const CommandBuilder: React.FC<CommandBuilderProps> = ({

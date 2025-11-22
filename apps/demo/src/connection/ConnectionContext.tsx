@@ -18,6 +18,8 @@ interface ConnectionContextValue {
   lastError?: CommandResult;
   /** Force an immediate reconnect attempt. */
   retry: () => void;
+  /** Current navigation path (for SPA-style navigation demo) */
+  currentPath: string;
 }
 
 const ConnectionContext = createContext<ConnectionContextValue | undefined>(undefined);
@@ -29,6 +31,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     retryCount: 0,
   });
   const [lastError, setLastError] = useState<CommandResult | undefined>();
+  const [currentPath, setCurrentPath] = useState<string>(window.location.pathname || '/');
 
   const connectionRef = useRef<ReturnType<typeof createWebSocketCommandClient> | null>(null);
 
@@ -81,6 +84,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       push: (path: string) => {
         try {
           window.history.pushState({}, '', path);
+          setCurrentPath(path);
           window.dispatchEvent(new PopStateEvent('popstate'));
         } catch {
           // ignore navigation errors in demo
@@ -89,6 +93,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       replace: (path: string) => {
         try {
           window.history.replaceState({}, '', path);
+          setCurrentPath(path);
           window.dispatchEvent(new PopStateEvent('popstate'));
         } catch {
           // ignore navigation errors in demo
@@ -129,8 +134,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       retry: () => {
         connectionRef.current?.connect();
       },
+      currentPath,
     }),
-    [connectionState, lastError],
+    [connectionState, lastError, currentPath],
   );
 
   return <ConnectionContext.Provider value={value}>{children}</ConnectionContext.Provider>;

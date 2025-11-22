@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { MockBrowserBar } from './MockBrowserBar';
+import { RefreshTarget } from './RefreshTarget';
+import { GlobalOverlayManager } from './GlobalOverlayManager';
 
 /**
  * Interactive Canvas component for testing interaction commands.
@@ -8,6 +11,9 @@ import React, { useEffect, useState, useRef } from 'react';
  * - hover command
  * - focus command
  * - scroll command
+ * - navigate command
+ * - refresh_element command
+ * - open/close commands
  */
 export const InteractiveCanvas: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +40,12 @@ export const InteractiveCanvas: React.FC = () => {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Mock Browser Bar for navigate command visualization */}
+      <MockBrowserBar />
+
+      {/* Global Overlay Manager for open/close commands */}
+      <GlobalOverlayManager />
+
       <div
         style={{
           display: 'grid',
@@ -41,6 +53,9 @@ export const InteractiveCanvas: React.FC = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         }}
       >
+        {/* Refresh Target - demonstrates refresh_element command */}
+        <RefreshTarget />
+
         {/* Highlight test element */}
         <div
           data-elementid="highlight-target"
