@@ -8,8 +8,8 @@ export const CommandTimeline: React.FC = () => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Seed from existing history
-    setEntries(globalLoggingBus.getHistory());
+    // Seed from existing history (copy and reverse to show newest first)
+    setEntries([...globalLoggingBus.getHistory()].reverse());
 
     const unsubscribe = globalLoggingBus.subscribe(entry => {
       setEntries(prev => {
@@ -136,7 +136,7 @@ export const CommandTimeline: React.FC = () => {
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {filteredEntries.map(entry => (
               <li
-                key={entry.id}
+                key={`${entry.id}-${entry.timestamp}`}
                 style={{
                   marginBottom: '0.5rem',
                   padding: '0.5rem',
