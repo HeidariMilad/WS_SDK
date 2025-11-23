@@ -75,16 +75,18 @@ function renderOverlay(config, onButtonClick) {
     }
     // Remove existing button if present
     removeOverlay(overlayId);
-    // Collect metadata from the target element
-    const metadata = (0, utils_1.collectElementMetadata)(targetElement);
-    // Create integrated click handler that runs prompt workflow first
-    const integratedClickHandler = async (metadata) => {
+    // Collect initial metadata from the target element (used for initial render)
+    const initialMetadata = (0, utils_1.collectElementMetadata)(targetElement);
+    // Create integrated click handler that re-collects metadata before invoking workflow
+    const integratedClickHandler = async (_metadata) => {
+        // Re-collect metadata at click time to capture latest value/text state
+        const currentMetadata = (0, utils_1.collectElementMetadata)(targetElement);
         try {
             // Execute the prompt workflow (API call + chatbot integration)
-            await (0, promptWorkflow_1.handleAIButtonClick)(metadata);
+            await (0, promptWorkflow_1.handleAIButtonClick)(currentMetadata);
             // Call the user's custom onClick handler if provided
             if (onButtonClick) {
-                await onButtonClick(metadata);
+                await onButtonClick(currentMetadata);
             }
         }
         catch (error) {
@@ -95,7 +97,7 @@ function renderOverlay(config, onButtonClick) {
                 category: "ui",
                 message: userMessage,
                 metadata: {
-                    elementId: metadata.elementId,
+                    elementId: currentMetadata.elementId,
                     error: error instanceof Error ? error.message : String(error),
                 },
             });
@@ -104,7 +106,7 @@ function renderOverlay(config, onButtonClick) {
         }
     };
     // Create the button with integrated handler
-    const button = (0, AIOverlayButton_1.createAIOverlayButton)(options, metadata, integratedClickHandler);
+    const button = (0, AIOverlayButton_1.createAIOverlayButton)(options, initialMetadata, integratedClickHandler);
     // Enable pointer events on the button
     button.style.pointerEvents = "auto";
     // Position the button
@@ -138,13 +140,14 @@ function renderOverlay(config, onButtonClick) {
  */
 function positionButton(button, targetElement, options) {
     const placement = options.placement || "top-right";
-    const size = options.size || "default";
-    const buttonSize = size === "compact"
-        ? { width: 32, height: 32 }
-        : options.label
-            ? { width: 120, height: 44 } // Estimate for labeled button
-            : { width: 44, height: 44 };
-    const position = (0, utils_1.calculateOverlayPosition)(targetElement, placement, buttonSize);
+    // Get button size from options or use defaults
+    const width = options.width || (options.size === "compact" ? 32 : 44);
+    const height = options.height || (options.size === "compact" ? 32 : 44);
+    const buttonSize = { width, height };
+    // Get offsets from options
+    const offsetX = options.offsetX || 0;
+    const offsetY = options.offsetY || 0;
+    const position = (0, utils_1.calculateOverlayPosition)(targetElement, placement, buttonSize, offsetX, offsetY);
     button.style.top = `${position.top}px`;
     button.style.left = `${position.left}px`;
 }

@@ -14,6 +14,7 @@ import { getBackoffDelayMs, getDefaultDelaysMs } from "./backoff";
  * Responsibilities:
  * - Manage WebSocket lifecycle (connect, disconnect, status events).
  * - Perform exponential backoff reconnection with a 3s cap.
+ * - Debounce rapid command sends to prevent excessive network traffic.
  * - Surface status changes and errors via callbacks and the logging bus.
  * - Parse incoming messages into CommandPayload objects.
  */
@@ -22,7 +23,10 @@ export class WebSocketConnection {
   private state: ConnectionState = { status: "offline", retryCount: 0 };
   private reconnectAttempt = 0;
   private reconnectTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private pendingCommand: CommandPayload | null = null;
   private readonly delays: readonly number[];
+  private readonly debounceDelayMs: number;
   private readonly loggingBus: LoggingBus;
   private readonly isOnline: () => boolean;
   private manualDisconnect = false;
@@ -33,6 +37,7 @@ export class WebSocketConnection {
 
   constructor(private readonly options: ConnectionOptions) {
     this.delays = options.reconnectDelaysMs ?? getDefaultDelaysMs();
+    this.debounceDelayMs = options.debounceDelayMs ?? 300;
     this.loggingBus = options.loggingBus ?? globalLoggingBus;
     this.isOnline = options.isOnline ?? defaultIsOnline;
   }
@@ -52,6 +57,7 @@ export class WebSocketConnection {
   disconnect(opts: { reason?: string } = {}): void {
     this.manualDisconnect = true;
     this.clearReconnectTimeout();
+    this.clearDebounceTimeout();
 
     if (this.socket && this.socket.readyState === this.socket.OPEN) {
       this.socket.close(1000, opts.reason ?? "Client disconnect");
@@ -62,6 +68,7 @@ export class WebSocketConnection {
 
   /**
    * Send a command over the active WebSocket connection.
+   * If debouncing is enabled, rapid commands are debounced and only the last one is sent.
    */
   sendCommand(payload: CommandPayload): void {
     if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
@@ -69,7 +76,31 @@ export class WebSocketConnection {
       return;
     }
 
-    this.socket.send(JSON.stringify(payload));
+    // If debouncing is disabled (delay <= 0), send immediately
+    if (this.debounceDelayMs <= 0) {
+      this.socket.send(JSON.stringify(payload));
+      return;
+    }
+
+    // Store the latest command
+    this.pendingCommand = payload;
+
+    // Clear existing debounce timeout if any
+    if (this.debounceTimeoutId !== null) {
+      clearTimeout(this.debounceTimeoutId);
+      this.debounceTimeoutId = null;
+    }
+
+    // Set new timeout to send the command after delay
+    this.debounceTimeoutId = setTimeout(() => {
+      // Send the pending command (which is the last one)
+      const commandToSend = this.pendingCommand;
+      if (commandToSend && this.socket && this.socket.readyState === this.socket.OPEN) {
+        this.socket.send(JSON.stringify(commandToSend));
+        this.pendingCommand = null;
+      }
+      this.debounceTimeoutId = null;
+    }, this.debounceDelayMs);
   }
 
   subscribeStatus(listener: (state: ConnectionState) => void): () => void {
@@ -240,6 +271,14 @@ export class WebSocketConnection {
       clearTimeout(this.reconnectTimeoutId);
       this.reconnectTimeoutId = null;
     }
+  }
+
+  private clearDebounceTimeout(): void {
+    if (this.debounceTimeoutId !== null) {
+      clearTimeout(this.debounceTimeoutId);
+      this.debounceTimeoutId = null;
+    }
+    this.pendingCommand = null;
   }
 
   private updateState(status: ConnectionStatus, error?: Error): void {

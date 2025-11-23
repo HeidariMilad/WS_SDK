@@ -71,6 +71,36 @@ export interface AttachAiButtonOptions {
      * @default 10000
      */
     zIndex?: number;
+    /**
+     * Background color for the button.
+     * @default "#2563eb" (blue)
+     */
+    backgroundColor?: string;
+    /**
+     * Border color for the button.
+     * @default "#1e40af" (darker blue)
+     */
+    borderColor?: string;
+    /**
+     * Width of the button in pixels.
+     * @default 44 (default size) or 32 (compact size)
+     */
+    width?: number;
+    /**
+     * Height of the button in pixels.
+     * @default 44 (default size) or 32 (compact size)
+     */
+    height?: number;
+    /**
+     * X-axis offset in pixels (positive = right, negative = left).
+     * @default 0
+     */
+    offsetX?: number;
+    /**
+     * Y-axis offset in pixels (positive = down, negative = up).
+     * @default 0
+     */
+    offsetY?: number;
 }
 /**
  * Metadata collected from a target element for AI prompt generation.

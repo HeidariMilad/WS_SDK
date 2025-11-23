@@ -89,6 +89,8 @@ async function handleAIButtonClick(metadata) {
         // 1. Construct the prompt request with element context
         const aiMetadata = toAIElementMetadata(metadata);
         const promptRequest = {
+            elementId: aiMetadata.elementId,
+            value: aiMetadata.value,
             metadata: aiMetadata,
             timestamp: Date.now(),
             context: {
@@ -119,7 +121,7 @@ async function handleAIButtonClick(metadata) {
                 prompt: promptResponse.prompt,
                 elementId,
                 requestId: promptResponse.requestId,
-                extraInfo: promptResponse.metadata,
+                extraInfo: promptResponse.extraInfo || promptResponse.metadata,
                 metadata: aiMetadata,
                 timestamp: promptResponse.timestamp,
             };

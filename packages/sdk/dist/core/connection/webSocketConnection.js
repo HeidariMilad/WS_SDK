@@ -9,6 +9,7 @@ const backoff_1 = require("./backoff");
  * Responsibilities:
  * - Manage WebSocket lifecycle (connect, disconnect, status events).
  * - Perform exponential backoff reconnection with a 3s cap.
+ * - Debounce rapid command sends to prevent excessive network traffic.
  * - Surface status changes and errors via callbacks and the logging bus.
  * - Parse incoming messages into CommandPayload objects.
  */
@@ -19,11 +20,14 @@ class WebSocketConnection {
         this.state = { status: "offline", retryCount: 0 };
         this.reconnectAttempt = 0;
         this.reconnectTimeoutId = null;
+        this.debounceTimeoutId = null;
+        this.pendingCommand = null;
         this.manualDisconnect = false;
         this.statusListeners = new Set();
         this.commandListeners = new Set();
         this.errorListeners = new Set();
         this.delays = options.reconnectDelaysMs ?? (0, backoff_1.getDefaultDelaysMs)();
+        this.debounceDelayMs = options.debounceDelayMs ?? 300;
         this.loggingBus = options.loggingBus ?? loggingBus_1.globalLoggingBus;
         this.isOnline = options.isOnline ?? defaultIsOnline;
     }
@@ -41,6 +45,7 @@ class WebSocketConnection {
     disconnect(opts = {}) {
         this.manualDisconnect = true;
         this.clearReconnectTimeout();
+        this.clearDebounceTimeout();
         if (this.socket && this.socket.readyState === this.socket.OPEN) {
             this.socket.close(1000, opts.reason ?? "Client disconnect");
         }
@@ -48,13 +53,35 @@ class WebSocketConnection {
     }
     /**
      * Send a command over the active WebSocket connection.
+     * If debouncing is enabled, rapid commands are debounced and only the last one is sent.
      */
     sendCommand(payload) {
         if (!this.socket || this.socket.readyState !== this.socket.OPEN) {
             this.logError("Connection is not open; cannot send command", payload.requestId);
             return;
         }
-        this.socket.send(JSON.stringify(payload));
+        // If debouncing is disabled (delay <= 0), send immediately
+        if (this.debounceDelayMs <= 0) {
+            this.socket.send(JSON.stringify(payload));
+            return;
+        }
+        // Store the latest command
+        this.pendingCommand = payload;
+        // Clear existing debounce timeout if any
+        if (this.debounceTimeoutId !== null) {
+            clearTimeout(this.debounceTimeoutId);
+            this.debounceTimeoutId = null;
+        }
+        // Set new timeout to send the command after delay
+        this.debounceTimeoutId = setTimeout(() => {
+            // Send the pending command (which is the last one)
+            const commandToSend = this.pendingCommand;
+            if (commandToSend && this.socket && this.socket.readyState === this.socket.OPEN) {
+                this.socket.send(JSON.stringify(commandToSend));
+                this.pendingCommand = null;
+            }
+            this.debounceTimeoutId = null;
+        }, this.debounceDelayMs);
     }
     subscribeStatus(listener) {
         this.statusListeners.add(listener);
@@ -191,6 +218,13 @@ class WebSocketConnection {
             clearTimeout(this.reconnectTimeoutId);
             this.reconnectTimeoutId = null;
         }
+    }
+    clearDebounceTimeout() {
+        if (this.debounceTimeoutId !== null) {
+            clearTimeout(this.debounceTimeoutId);
+            this.debounceTimeoutId = null;
+        }
+        this.pendingCommand = null;
     }
     updateState(status, error) {
         const retryCount = status === "connected" ? 0 : this.state.retryCount;

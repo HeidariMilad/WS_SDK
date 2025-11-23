@@ -35,6 +35,12 @@ export interface ConnectionConfig {
    * Defaults to [1000, 2000, 3000] matching the story's 1s → 2s → 3s cap.
    */
   reconnectDelaysMs?: number[];
+  /**
+   * Debounce delay (in ms) for rapid command sends.
+   * When multiple commands are sent rapidly, only the last one is executed after this delay.
+   * Defaults to 300ms. Set to 0 to disable debouncing.
+   */
+  debounceDelayMs?: number;
   /** Optional logger; defaults to the global logging bus. */
   loggingBus?: LoggingBus;
   /**

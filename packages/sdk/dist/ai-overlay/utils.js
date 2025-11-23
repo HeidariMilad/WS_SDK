@@ -15,6 +15,43 @@ exports.getDefaultAiIcon = getDefaultAiIcon;
  * @param element - The target HTMLElement.
  * @returns ElementMetadata object with all relevant information.
  */
+function normalizeValue(value) {
+    if (value === undefined || value === null) {
+        return undefined;
+    }
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+}
+function getElementValue(element) {
+    if (element instanceof HTMLInputElement) {
+        if (element.type === "checkbox" || element.type === "radio") {
+            if (!element.checked) {
+                return undefined;
+            }
+            return normalizeValue(element.value || "on");
+        }
+        return normalizeValue(element.value);
+    }
+    if (element instanceof HTMLTextAreaElement) {
+        return normalizeValue(element.value);
+    }
+    if (element instanceof HTMLSelectElement) {
+        const selectedOptions = Array.from(element.selectedOptions);
+        if (selectedOptions.length === 0) {
+            return undefined;
+        }
+        if (element.multiple) {
+            return selectedOptions.map((option) => option.value || option.text).join(", ");
+        }
+        const option = selectedOptions[0];
+        return normalizeValue(option.value || option.text);
+    }
+    if (element.isContentEditable) {
+        return normalizeValue(element.textContent);
+    }
+    const valueAttr = element.getAttribute("value");
+    return normalizeValue(valueAttr);
+}
 function collectElementMetadata(element) {
     const rect = element.getBoundingClientRect();
     const dataAttributes = {};
@@ -31,14 +68,12 @@ function collectElementMetadata(element) {
         (element instanceof HTMLInputElement ? element.value : undefined) ||
         element.textContent?.trim() ||
         undefined;
+    const value = getElementValue(element);
     return {
         elementId: element.getAttribute("data-elementid") || undefined,
         tagName: element.tagName.toLowerCase(),
         textContent: element.textContent?.trim() || undefined,
-        value: element instanceof HTMLInputElement ||
-            element instanceof HTMLTextAreaElement
-            ? element.value
-            : undefined,
+        value,
         dataAttributes,
         computedLabel,
         boundingBox: {
@@ -52,46 +87,57 @@ function collectElementMetadata(element) {
 /**
  * Calculate absolute position for an overlay button relative to a target element.
  *
+ * Positions button INSIDE the element boundaries with fixed margins.
+ *
  * @param targetElement - The element to position relative to.
  * @param placement - The placement configuration.
- * @param buttonSize - The size of the overlay button (for collision detection).
+ * @param buttonSize - The size of the overlay button.
+ * @param offsetX - X-axis offset in pixels (default: 0).
+ * @param offsetY - Y-axis offset in pixels (default: 0).
  * @returns Object with top and left pixel values.
  */
-function calculateOverlayPosition(targetElement, placement = "top-right", buttonSize = { width: 44, height: 44 }) {
+function calculateOverlayPosition(targetElement, placement = "top-right", buttonSize = { width: 44, height: 44 }, offsetX = 0, offsetY = 0) {
     const rect = targetElement.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
     // Base position relative to viewport + scroll offset
     const baseTop = rect.top + scrollTop;
     const baseLeft = rect.left + scrollLeft;
+    // Fixed margin from edges (stable positioning)
+    const margin = 8;
     let top = baseTop;
     let left = baseLeft;
     if (typeof placement === "string") {
         switch (placement) {
             case "top-left":
-                top = baseTop - buttonSize.height - 4; // 4px gap
-                left = baseLeft;
+                // Inside top-left corner with margin
+                top = baseTop + margin;
+                left = baseLeft + margin;
                 break;
             case "top-right":
-                top = baseTop - buttonSize.height - 4;
-                left = baseLeft + rect.width - buttonSize.width;
+                // Inside top-right corner with fixed margin from right edge
+                top = baseTop + margin;
+                left = baseLeft + rect.width - buttonSize.width - margin;
                 break;
             case "bottom-left":
-                top = baseTop + rect.height + 4;
-                left = baseLeft;
+                // Inside bottom-left corner with margin
+                top = baseTop + rect.height - buttonSize.height - margin;
+                left = baseLeft + margin;
                 break;
             case "bottom-right":
-                top = baseTop + rect.height + 4;
-                left = baseLeft + rect.width - buttonSize.width;
+                // Inside bottom-right corner with fixed margin from right and bottom edges
+                top = baseTop + rect.height - buttonSize.height - margin;
+                left = baseLeft + rect.width - buttonSize.width - margin;
                 break;
             case "center":
+                // Centered inside element
                 top = baseTop + rect.height / 2 - buttonSize.height / 2;
                 left = baseLeft + rect.width / 2 - buttonSize.width / 2;
                 break;
         }
     }
     else {
-        // Custom placement object
+        // Custom placement object with inside positioning
         if (placement.top !== undefined) {
             top = baseTop + placement.top;
         }
@@ -99,31 +145,24 @@ function calculateOverlayPosition(targetElement, placement = "top-right", button
             left = baseLeft + placement.left;
         }
         if (placement.right !== undefined) {
+            // Position from right edge (inside element)
             left = baseLeft + rect.width - placement.right - buttonSize.width;
         }
         if (placement.bottom !== undefined) {
+            // Position from bottom edge (inside element)
             top = baseTop + rect.height - placement.bottom - buttonSize.height;
         }
     }
-    // Basic collision detection: ensure overlay stays within viewport
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    // Adjust if overlay would be clipped on the right
-    if (left + buttonSize.width > scrollLeft + viewportWidth) {
-        left = scrollLeft + viewportWidth - buttonSize.width - 8; // 8px margin
-    }
-    // Adjust if overlay would be clipped on the left
-    if (left < scrollLeft) {
-        left = scrollLeft + 8;
-    }
-    // Adjust if overlay would be clipped on the bottom
-    if (top + buttonSize.height > scrollTop + viewportHeight) {
-        top = scrollTop + viewportHeight - buttonSize.height - 8;
-    }
-    // Adjust if overlay would be clipped on the top
-    if (top < scrollTop) {
-        top = scrollTop + 8;
-    }
+    // Apply user-defined offsets
+    top += offsetY;
+    left += offsetX;
+    // Ensure button stays within element bounds
+    const minTop = baseTop;
+    const maxTop = baseTop + rect.height - buttonSize.height;
+    const minLeft = baseLeft;
+    const maxLeft = baseLeft + rect.width - buttonSize.width;
+    top = Math.max(minTop, Math.min(maxTop, top));
+    left = Math.max(minLeft, Math.min(maxLeft, left));
     return { top, left };
 }
 /**

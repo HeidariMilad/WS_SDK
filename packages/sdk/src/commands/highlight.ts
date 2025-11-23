@@ -21,9 +21,20 @@ const DEFAULT_HIGHLIGHT_OPTIONS: Required<HighlightOptions> = {
 };
 
 /**
- * Active highlight cleanup timers, keyed by element.
+ * Active highlight state, keyed by element.
+ *
+ * Tracks the cleanup timeout and the original styles so that repeated
+ * highlight commands on the same element do not lose the original styles.
  */
-const activeHighlights = new WeakMap<Element, number>();
+const activeHighlights = new WeakMap<
+  Element,
+  {
+    timeoutId: number;
+    originalOutline: string;
+    originalOutlineOffset: string;
+    originalTransition: string;
+  }
+>();
 
 /**
  * Highlight command handler.
@@ -101,16 +112,19 @@ export async function handleHighlight(
   const element = resolution.element;
 
   try {
-    // Clear any existing highlight timeout for this element
-    const existingTimeout = activeHighlights.get(element);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
+    // If this element is already highlighted, reuse the original styles from
+    // the first highlight so we always restore back to the true baseline.
+    const existing = activeHighlights.get(element);
+    if (existing) {
+      clearTimeout(existing.timeoutId);
     }
 
-    // Store original styles that we'll modify
-    const originalOutline = element.style.outline;
-    const originalOutlineOffset = element.style.outlineOffset;
-    const originalTransition = element.style.transition;
+    const originalOutline =
+      existing?.originalOutline ?? element.style.outline;
+    const originalOutlineOffset =
+      existing?.originalOutlineOffset ?? element.style.outlineOffset;
+    const originalTransition =
+      existing?.originalTransition ?? element.style.transition;
 
     // Apply highlight styles
     element.style.outline = `${config.thickness}px solid ${config.color}`;
@@ -135,7 +149,12 @@ export async function handleHighlight(
       });
     }, config.duration);
 
-    activeHighlights.set(element, timeoutId);
+    activeHighlights.set(element, {
+      timeoutId,
+      originalOutline,
+      originalOutlineOffset,
+      originalTransition,
+    });
 
     const result: CommandResult = {
       status: resolution.warnings.length > 0 ? "warning" : "ok",

@@ -107,8 +107,13 @@ function createAIOverlayButton(options, metadata, onClick) {
  */
 function applyBaseStyles(button, options) {
     const size = options.size || "default";
-    const buttonSize = size === "compact" ? 32 : 44;
     const reducedMotion = (0, utils_1.prefersReducedMotion)();
+    // Get dimensions from options or defaults
+    const width = options.width || (size === "compact" ? 32 : 44);
+    const height = options.height || (size === "compact" ? 32 : 44);
+    // Get colors from options or defaults
+    const backgroundColor = options.backgroundColor || "#2563eb";
+    const borderColor = options.borderColor || "#1e40af";
     // Base styles
     Object.assign(button.style, {
         position: "absolute",
@@ -116,12 +121,13 @@ function applyBaseStyles(button, options) {
         alignItems: "center",
         justifyContent: "center",
         gap: "6px",
-        width: options.label && size === "default" ? "auto" : `${buttonSize}px`,
-        height: `${buttonSize}px`,
+        width: options.label && size === "default" ? "auto" : `${width}px`,
+        minWidth: `${width}px`,
+        height: `${height}px`,
         padding: options.label ? "0 12px" : "0",
-        border: "none",
+        border: `2px solid ${borderColor}`,
         borderRadius: "8px",
-        backgroundColor: "#F59E0B",
+        backgroundColor,
         color: "#fff",
         cursor: "pointer",
         fontSize: size === "compact" ? "12px" : "14px",
@@ -130,7 +136,7 @@ function applyBaseStyles(button, options) {
         transition: reducedMotion
             ? "none"
             : "transform 200ms ease-out, box-shadow 200ms ease-out, opacity 300ms ease-in-out",
-        zIndex: options.zIndex || 10000,
+        zIndex: (options.zIndex || 10000).toString(),
         outline: "none",
         ...(options.style || {}),
     });

@@ -47,12 +47,17 @@ async function requestAiPrompt(request, config = {}) {
     const finalConfig = { ...DEFAULT_CONFIG, ...config };
     const requestId = generateRequestId();
     const url = `${finalConfig.baseUrl}/mock/ai_generate_ui_prompt`;
+    const targetElementId = request.elementId || request.metadata.elementId || "unknown";
     // Log the prompt request
     loggingBus_1.globalLoggingBus.log({
         severity: "info",
         category: "ai-prompt",
-        message: `Requesting AI prompt for element: ${request.metadata.elementId || "unknown"}`,
-        metadata: { requestId, elementId: request.metadata.elementId },
+        message: `Requesting AI prompt for element: ${targetElementId}`,
+        metadata: {
+            requestId,
+            elementId: targetElementId,
+            value: request.value,
+        },
     });
     // Optional shortcut: generate a local mock response without any HTTP call.
     if (finalConfig.useLocalMock) {
@@ -60,10 +65,10 @@ async function requestAiPrompt(request, config = {}) {
         loggingBus_1.globalLoggingBus.log({
             severity: "info",
             category: "ai-prompt",
-            message: `AI prompt generated locally for element: ${request.metadata.elementId || "unknown"}`,
+            message: `AI prompt generated locally for element: ${targetElementId}`,
             metadata: {
                 requestId,
-                elementId: request.metadata.elementId,
+                elementId: targetElementId,
                 promptLength: localResponse.prompt.length,
                 source: "local-mock",
             },
@@ -91,17 +96,18 @@ async function requestAiPrompt(request, config = {}) {
             const normalizedResponse = {
                 prompt: data.prompt,
                 timestamp: data.timestamp || Date.now(),
-                metadata: data.metadata || {},
+                extraInfo: data.extraInfo ?? data.metadata ?? {},
+                metadata: data.metadata,
                 requestId,
             };
             // Log success
             loggingBus_1.globalLoggingBus.log({
                 severity: "info",
                 category: "ai-prompt",
-                message: `AI prompt received for element: ${request.metadata.elementId || "unknown"}`,
+                message: `AI prompt received for element: ${targetElementId}`,
                 metadata: {
                     requestId,
-                    elementId: request.metadata.elementId,
+                    elementId: targetElementId,
                     promptLength: normalizedResponse.prompt.length,
                 },
             });
@@ -116,7 +122,7 @@ async function requestAiPrompt(request, config = {}) {
                 message: `AI prompt request failed (attempt ${attempt}/${maxAttempts}): ${error.message}`,
                 metadata: {
                     requestId,
-                    elementId: request.metadata.elementId,
+                    elementId: targetElementId,
                     attempt,
                     error: error instanceof Error ? error.message : String(error),
                 },
@@ -147,6 +153,12 @@ function buildLocalPromptResponse(request, requestId) {
     return {
         prompt,
         timestamp: Date.now(),
+        extraInfo: {
+            source: "local-mock",
+            elementId: meta.elementId,
+            tagName: meta.tagName,
+            value: request.value,
+        },
         metadata: {
             source: "local-mock",
             elementId: meta.elementId,

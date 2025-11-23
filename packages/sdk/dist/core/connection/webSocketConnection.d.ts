@@ -6,6 +6,7 @@ import { ConnectionOptions, ConnectionState } from "./types";
  * Responsibilities:
  * - Manage WebSocket lifecycle (connect, disconnect, status events).
  * - Perform exponential backoff reconnection with a 3s cap.
+ * - Debounce rapid command sends to prevent excessive network traffic.
  * - Surface status changes and errors via callbacks and the logging bus.
  * - Parse incoming messages into CommandPayload objects.
  */
@@ -15,7 +16,10 @@ export declare class WebSocketConnection {
     private state;
     private reconnectAttempt;
     private reconnectTimeoutId;
+    private debounceTimeoutId;
+    private pendingCommand;
     private readonly delays;
+    private readonly debounceDelayMs;
     private readonly loggingBus;
     private readonly isOnline;
     private manualDisconnect;
@@ -35,6 +39,7 @@ export declare class WebSocketConnection {
     }): void;
     /**
      * Send a command over the active WebSocket connection.
+     * If debouncing is enabled, rapid commands are debounced and only the last one is sent.
      */
     sendCommand(payload: CommandPayload): void;
     subscribeStatus(listener: (state: ConnectionState) => void): () => void;
@@ -47,6 +52,7 @@ export declare class WebSocketConnection {
     private handleMessage;
     private scheduleReconnect;
     private clearReconnectTimeout;
+    private clearDebounceTimeout;
     private updateState;
     private logUnhandledMessage;
     private logError;
